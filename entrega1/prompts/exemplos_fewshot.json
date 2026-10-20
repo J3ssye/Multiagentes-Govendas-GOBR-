@@ -1,0 +1,51 @@
+{
+  "_sobre": "Saídas-alvo dos 3 exemplos da pasta 'exemplos'. O ESTILO vem das imagens (mapa mental: segmento -> critério -> frequência). O CONTEÚDO vem do .gobr: entram os blocos que a imagem não mostra (ex.: baixados na Receita, regra final) e saem os requisitos que o .gobr não implementa (ex.: capacidade de 35 clientes/dia da Maxlub). Assim o few-shot ensina fidelidade ao código, não à imagem.",
+  "exemplos/RegraInfinittoDesign.gobr": {
+    "titulo": "Regra Infinitto Design",
+    "resumo": "Parametrização do time de televendas (vendedores do tipo televendas ativados). Clientes baixados na Receita Federal não são agendados; os demais recebem uma frequência de ligação conforme o tempo desde o último pedido. Os blocos são avaliados em ordem: o cliente fica no primeiro bloco em que se encaixar.",
+    "segmentos": [
+      {"bloco": 1, "nome": "Baixados na Receita Federal", "criterio": "Clientes com CNPJ baixado na Receita Federal", "acao": "Não agendar", "observacao": ""},
+      {"bloco": 2, "nome": "Prospect", "criterio": "Clientes em ciclo de vida prospect com a empresa (nunca tiraram pedido)", "acao": "7 dias", "observacao": ""},
+      {"bloco": 3, "nome": "Ativo", "criterio": "Clientes com pedido nos últimos 60 dias, com qualquer vendedor da empresa", "acao": "14 dias", "observacao": ""},
+      {"bloco": 4, "nome": "Risco de inatividade", "criterio": "Clientes com pedido nos últimos 90 dias que não entraram em Ativo; na prática, último pedido entre 60 e 90 dias atrás", "acao": "7 dias", "observacao": "Aqui só contam pedidos com vendedores do mesmo grupo do dono da carteira (o bloco Ativo considera qualquer vendedor da empresa)."},
+      {"bloco": 5, "nome": "Inativo", "criterio": "Todos os clientes do time que sobraram dos blocos anteriores; na prática, sem pedido há mais de 90 dias", "acao": "28 dias", "observacao": "Bloco sem filtro: funciona como regra final."}
+    ],
+    "pontos_de_atencao": [
+      "O bloco Ativo usa compras com qualquer vendedor da empresa (global), mas o Risco de inatividade usa só vendedores do mesmo grupo. Um cliente que comprou há 70 dias apenas com um vendedor de outro grupo cai em Inativo (28 dias). Confirmar se é intencional."
+    ]
+  },
+  "exemplos/RegraMaxlub.gobr": {
+    "titulo": "Regra Maxlub",
+    "resumo": "Parametrização do time de televendas (vendedores do tipo televendas ativados). Primeiro bloqueia quem não deve ser agendado (baixados na Receita, inadimplentes e clientes com rota do vendedor externo na semana); depois define a frequência de ligação pelo tempo desde a última compra (compras com vendedores do mesmo grupo); quem sobra não é agendado. Os blocos são avaliados em ordem: o cliente fica no primeiro bloco em que se encaixar.",
+    "segmentos": [
+      {"bloco": 1, "nome": "Não agendar baixados na Receita", "criterio": "Clientes com CNPJ baixado na Receita Federal", "acao": "Não agendar", "observacao": ""},
+      {"bloco": 2, "nome": "Não agendar inadimplentes", "criterio": "Clientes inadimplentes (com pendências financeiras em aberto)", "acao": "Não agendar", "observacao": ""},
+      {"bloco": 3, "nome": "Não agendar clientes em rota", "criterio": "Clientes com data de rota (visita presencial do vendedor externo) na semana atual", "acao": "Não agendar", "observacao": "Evita que o cliente receba ligação do televendas na mesma semana da visita do externo."},
+      {"bloco": 4, "nome": "Prospects", "criterio": "Clientes em ciclo de vida prospect com a empresa", "acao": "14 dias", "observacao": ""},
+      {"bloco": 5, "nome": "Clientes ativos", "criterio": "Clientes com compra nos últimos 60 dias", "acao": "14 dias", "observacao": ""},
+      {"bloco": 6, "nome": "Risco de inatividade", "criterio": "Clientes com compra nos últimos 90 dias que não entraram nos blocos anteriores; na prática, entre 60 e 90 dias sem comprar", "acao": "7 dias", "observacao": ""},
+      {"bloco": 7, "nome": "Inativos (90 dias)", "criterio": "Clientes com compra nos últimos 120 dias que não entraram nos blocos anteriores; na prática, entre 90 e 120 dias sem comprar", "acao": "14 dias", "observacao": ""},
+      {"bloco": 8, "nome": "Inativos (120 dias)", "criterio": "Clientes com compra nos últimos 150 dias que não entraram nos blocos anteriores; na prática, entre 120 e 150 dias sem comprar", "acao": "21 dias", "observacao": ""},
+      {"bloco": 9, "nome": "Inativos (150 dias)", "criterio": "Clientes com compra nos últimos 180 dias que não entraram nos blocos anteriores; na prática, entre 150 e 180 dias sem comprar", "acao": "28 dias", "observacao": ""},
+      {"bloco": 10, "nome": "Regra final", "criterio": "Todos os clientes do time que não se enquadraram em nenhum bloco anterior (por exemplo, sem compra há mais de 180 dias)", "acao": "Não agendar", "observacao": "Bloco sem filtro: funciona como regra final."}
+    ],
+    "pontos_de_atencao": [
+      "Clientes sem compra há mais de 180 dias caem na regra final e não são agendados."
+    ]
+  },
+  "exemplos/V1Vidros-RegraComercial.gobr": {
+    "titulo": "Regra Comercial V1 Vidros",
+    "resumo": "Parametrização do time de televendas (vendedores do tipo televendas ativados). Clientes baixados na Receita não são agendados; os demais recebem frequência de ligação conforme o tempo desde o último pedido (compras com vendedores do mesmo grupo), e prospects recebem frequência própria. Os blocos são avaliados em ordem.",
+    "segmentos": [
+      {"bloco": 1, "nome": "Não agendar baixados na Receita", "criterio": "Clientes com CNPJ baixado na Receita Federal", "acao": "Não agendar", "observacao": ""},
+      {"bloco": 2, "nome": "Clientes ativos", "criterio": "Clientes com pedido nos últimos 30 dias", "acao": "14 dias", "observacao": ""},
+      {"bloco": 3, "nome": "Risco de inatividade", "criterio": "Clientes com pedido nos últimos 45 dias, mas sem pedido nos últimos 30 dias (entre 30 e 45 dias sem comprar)", "acao": "7 dias", "observacao": ""},
+      {"bloco": 4, "nome": "Inativos", "criterio": "Clientes sem pedido nos últimos 45 dias", "acao": "14 dias", "observacao": ""},
+      {"bloco": 5, "nome": "Clientes prospects", "criterio": "Clientes em ciclo de vida prospect com a empresa", "acao": "7 dias", "observacao": ""}
+    ],
+    "pontos_de_atencao": [
+      "Não há bloco final sem filtro: clientes que não se enquadram em nenhum bloco mantêm a parametrização que já tinham.",
+      "O bloco de prospects vem depois de Inativos ('sem pedido nos últimos 45 dias'). Se esse filtro também alcançar quem nunca comprou, os prospects receberiam 14 dias e nunca chegariam ao bloco de 7 dias; o manual não esclarece. Vale confirmar ou mover o bloco de prospects para antes."
+    ]
+  }
+}

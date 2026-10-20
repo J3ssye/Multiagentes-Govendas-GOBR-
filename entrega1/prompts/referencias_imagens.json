@@ -1,0 +1,28 @@
+{
+  "_sobre": "Transcrição fiel das 3 imagens (PDFs) da pasta 'exemplos', usada SOMENTE para avaliação (comparar a explicação gerada a partir do .gobr com a regra de negócio original). 'acao' em dias ou 'Não agendar'; null quando a imagem não indica ação.",
+  "exemplos/RegraInfinittoDesign.gobr": [
+    {"nome": "Ativo", "criterio": "Clientes com pedidos nos últimos 60", "acao": "14 dias"},
+    {"nome": "Risco de inatividade", "criterio": "Clientes com pedidos entre 60 e 90 dias", "acao": "7 dias"},
+    {"nome": "Inativo", "criterio": "Clientes sem pedidos a mais 90 dias", "acao": "28 dias"},
+    {"nome": "Prospect", "criterio": "Clinete com ciclo de vida prospect", "acao": "7 dias"}
+  ],
+  "exemplos/RegraMaxlub.gobr": [
+    {"nome": "Clientes Ativos", "criterio": "Clientes com compra entre 0 e 60 dias", "acao": "14 dias", "obs": "Somente clientes que não estão na rota da semana"},
+    {"nome": "Risco de Inatividade", "criterio": "Clientes que compraram nos últimos 90 mas estão a 60 dias sem comprar", "acao": "7 dias", "obs": "Somente clientes que não estão na rota da semana"},
+    {"nome": "Inativos (90 dias)", "criterio": "Clientes que compraram nos últimos 120 dias mas estão a 90 dias sem comprar", "acao": "14 dias", "obs": "Somente clientes que não estão na rota da semana"},
+    {"nome": "Inativos (120 dias)", "criterio": "Comprou nos últimos 150 dias mas estão a 120 dias sem comprar", "acao": "21 dias", "obs": "Somente clientes que não estão na rota da semana"},
+    {"nome": "Inativos (150 dias)", "criterio": "Comprou nos últimos 180 mas estão a 150 dias sem comprar", "acao": "28 dias", "obs": "Somente clientes que não estão na rota da semana"},
+    {"nome": "Prospects", "criterio": "Clientes com ciclo de vida em prospects na empresa", "acao": "14 dias", "obs": "Somente clientes que não estão na rota da semana"},
+    {"nome": "Não agendar inadimplentes", "criterio": "", "acao": "Não agendar"},
+    {"nome": "Não agendar clientes em rota", "criterio": "Todos os clientes que esta na rota de visita do externo não pode ser agendado na mesma semana para o televendas", "acao": "Não agendar"},
+    {"nome": "Capacidade de atendimento: 35 clientes (Dia)", "criterio": "", "acao": null}
+  ],
+  "exemplos/V1Vidros-RegraComercial.gobr": [
+    {"nome": "Regra 01: Clientes Ativos", "criterio": "Clientes com pedido nos ultimos 30 dias", "acao": "14 dias"},
+    {"nome": "Regra 02: Risco de Inatividade", "criterio": "Clientes com pedido nos ultimos 45 dias, mas estão a 30 dias sem comprar", "acao": "7 dias"},
+    {"nome": "Regra 03: Inativos", "criterio": "Clientes sem pedidos a mais de 45 dias", "acao": "14 dias"},
+    {"nome": "Regra 04: Clientes Prospects", "criterio": "Clientes em ciclo de vida prospect", "acao": "7 dias"},
+    {"nome": "Agendar Inadiplentes", "criterio": "Clientes inadiplentes autorizados para agendamento", "acao": null},
+    {"nome": "Não agendar", "criterio": "Clientes baixados na receita", "acao": "Não agendar"}
+  ]
+}
