@@ -1,0 +1,11 @@
+{
+  "variante": "com_pontos",
+  "limite_tokens": 8192,
+  "regras": 199,
+  "nodes": 199,
+  "tokens_mediana": 336,
+  "tokens_max": 4136,
+  "regras_divididas": [],
+  "nodes_acima_do_limite": 0,
+  "segundos_embedding": 952.7
+}

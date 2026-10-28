@@ -1,0 +1,89 @@
+{
+  "_sobre": "Consultas para avaliar a recuperação. 'imagem' = descrição, em linguagem de usuário, de cada uma das 3 imagens da pasta exemplos (sem o nome do cliente). 'sintetica' = escrita a partir de regras do corpus escolhidas por terem detalhes distintivos; é um teste fraco (quem escreveu conhecia a resposta) e deve ser lido como sinal, não como prova. 'relevantes' = ids aceitos como resposta certa. Edite à vontade.",
+  "consultas": [
+    {
+      "id": "img_infinitto",
+      "tipo": "imagem",
+      "consulta": "Clientes ativos, com pedidos nos últimos 60 dias, ligar a cada 14 dias. Risco de inatividade, com pedidos entre 60 e 90 dias, a cada 7 dias. Inativos, sem pedidos há mais de 90 dias, a cada 28 dias. Prospects, clientes com ciclo de vida prospect, a cada 7 dias.",
+      "relevantes": ["exemplos/RegraInfinittoDesign.gobr"]
+    },
+    {
+      "id": "img_maxlub",
+      "tipo": "imagem",
+      "consulta": "Ativos (compra entre 0 e 60 dias) a cada 14 dias. Risco de inatividade (compraram nos últimos 90 dias mas estão a 60 dias sem comprar) a cada 7 dias. Inativos de 90 dias a cada 14 dias, de 120 dias a cada 21 dias e de 150 dias a cada 28 dias. Prospects a cada 14 dias. Tudo isso somente para clientes que não estão na rota da semana. Não agendar inadimplentes. Não agendar clientes em rota de visita do externo na mesma semana. Capacidade de atendimento de 35 clientes por dia.",
+      "relevantes": ["exemplos/RegraMaxlub.gobr"]
+    },
+    {
+      "id": "img_v1vidros",
+      "tipo": "imagem",
+      "consulta": "Regra 01: clientes ativos, com pedido nos últimos 30 dias, a cada 14 dias. Regra 02: risco de inatividade, pedido nos últimos 45 dias mas 30 dias sem comprar, a cada 7 dias. Regra 03: inativos, sem pedido há mais de 45 dias, a cada 14 dias. Regra 04: prospects a cada 7 dias. Agendar inadimplentes autorizados para agendamento. Não agendar clientes baixados na Receita.",
+      "relevantes": ["exemplos/V1Vidros-RegraComercial.gobr"]
+    },
+    {
+      "id": "sint_ramos_12_19",
+      "tipo": "sintetica",
+      "consulta": "Só agendar clientes dos ramos de atividade de 12 a 19. O ramo 12 é ligado a cada 7 dias e os outros ramos a cada 14 dias. Os demais ramos não são agendados.",
+      "relevantes": ["referencias/regra_079.gobr"]
+    },
+    {
+      "id": "sint_vendedora_sandra",
+      "tipo": "sintetica",
+      "consulta": "A vendedora Sandra, id 945, atende os clientes dela toda semana. Para os outros vendedores: inativo e inadimplente a cada 30 dias, inativo adimplente a cada 7 dias e o restante de 14 em 14 dias, sempre em dia útil.",
+      "relevantes": ["referencias/regra_045.gobr"]
+    },
+    {
+      "id": "sint_prospeccao_50_53",
+      "tipo": "sintetica",
+      "consulta": "Tenho uma carteira de prospecção com os vendedores 50 e 53: só entra quem nunca comprou, a cada 30 dias, e quem já comprou não é agendado. Para o resto da empresa, ativo adimplente a cada 14 dias e inativo inadimplente não agenda.",
+      "relevantes": ["referencias/regra_056.gobr"]
+    },
+    {
+      "id": "sint_quinzenal_mensal",
+      "tipo": "sintetica",
+      "consulta": "No televendas, quem comprou nos últimos 30 dias é ligado a cada 14 dias. Quem não compra há mais de 30 dias, ou nunca comprou, é ligado a cada 28 dias. Sempre de segunda a sexta.",
+      "relevantes": ["referencias/regra_065.gobr"]
+    },
+    {
+      "id": "sint_bloqueios_rota_hoje",
+      "tipo": "sintetica",
+      "consulta": "Não agendar inadimplentes, bloqueados, inativos para a empresa nem quem comprou nos últimos 20 dias. Cliente com rota hoje é agendado para o dia seguinte, prospect a cada 7 dias, cliente de compra única a cada 15 dias, quem compra regularmente segue a frequência do histórico com mínimo de 5 e máximo de 30 dias, e quem está em ruptura (31 a 90 dias) a cada 15 dias. O que sobrar não agenda.",
+      "relevantes": ["referencias/regra_076.gobr"]
+    },
+    {
+      "id": "sint_bloqueio_30d_prospect_14_ativo_7",
+      "tipo": "sintetica",
+      "consulta": "Bloquear clientes bloqueados, inadimplentes e quem comprou nos últimos 30 dias. Depois, prospects a cada 14 dias, ativos a cada 7 dias e os demais a cada 14 dias.",
+      "relevantes": ["referencias/regra_077.gobr"]
+    },
+    {
+      "id": "sint_televendas_x_campo",
+      "tipo": "sintetica",
+      "consulta": "No televendas: ativos a cada 14 dias, inativos a cada 60 dias e quem nunca comprou a cada 14 dias. No campo, separar por adimplência: ativos adimplentes 7 dias, ativos inadimplentes 14 dias, inativos adimplentes 30 dias e inativos inadimplentes 60 dias.",
+      "relevantes": ["referencias/regra_091.gobr"]
+    },
+    {
+      "id": "sint_ramo_e_ciclo_de_vida",
+      "tipo": "sintetica",
+      "consulta": "Frequência por ramo de atividade e ciclo de vida: bloquear os ramos que não são prioridade; ativos dos ramos 2 e 12 a cada 5 dias, dos ramos 10, 11, 14 e 19 a cada 7 dias; inativos dos ramos 11 e 19 a cada 10 dias, e os inativos restantes a cada 5 dias.",
+      "relevantes": ["referencias/regra_059.gobr"]
+    },
+    {
+      "id": "sint_campo_pf_ramo17",
+      "tipo": "sintetica",
+      "consulta": "No campo, não agendar o ramo 17 nem pessoa física; ativos adimplentes a cada 30 dias, sem venda a cada 21 dias, e o resto não agenda. No televendas, inadimplente não agenda, ativo adimplente 14 dias, inativo adimplente 30 dias e sem venda 14 dias.",
+      "relevantes": ["referencias/regra_068.gobr"]
+    },
+    {
+      "id": "sint_30_dias_sem_choque",
+      "tipo": "sintetica",
+      "consulta": "Todos os clientes do campo e do televendas, ativos, inativos e sem venda, a cada 30 dias, de segunda a sexta, e o televendas não pode cair no mesmo dia do time de campo.",
+      "relevantes": ["referencias/regra_063.gobr"]
+    },
+    {
+      "id": "sint_regra_grande_regioes",
+      "tipo": "sintetica",
+      "consulta": "Regra grande de televendas separada por região do país (Sul, Sudeste, Centro-Oeste, Norte e Nordeste), por faturamento e por ramo de atividade do cliente, bloqueando os baixados na Receita Federal.",
+      "relevantes": ["referencias/regra_032.gobr"]
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "_sobre": "CONJUNTO DE TESTE (não usado para ajustar nada). 20 regras sorteadas com random.seed(20261027) entre as 185 regras 'referencias/' que NÃO estão no conjunto de desenvolvimento (consultas_avaliacao.json). Consultas escritas a partir da explicação de cada regra, sem rodar nenhuma busca antes. Gabarito = id exato da regra. O corpus tem regras muito parecidas (ex.: regra_043 é só 'todos a cada 14 dias'): nesses casos o id exato pode ser inatingível, e isso fica no resultado. Configuração fixada ANTES de rodar: variante sem_pontos, 50 candidatos, bge-m3 + bge-reranker-v2-m3.",
+  "consultas": [
+    {
+      "id": "teste_022",
+      "tipo": "sintetica",
+      "consulta": "Televendas: todos os clientes a cada 14 dias, de segunda a sexta. Campo: quem nunca comprou não é agendado e os demais também a cada 14 dias, de segunda a sexta.",
+      "relevantes": [
+        "referencias/regra_022.gobr"
+      ]
+    },
+    {
+      "id": "teste_023",
+      "tipo": "sintetica",
+      "consulta": "Três equipes: televendas GYN, televendas DF e campo DF. No GYN, quem nunca comprou a cada 7 dias e os demais a cada 14. No televendas DF, adimplentes a cada 7 dias, ativos inadimplentes a cada 14, inativos inadimplentes não agenda e quem nunca comprou a cada 7 dias.",
+      "relevantes": [
+        "referencias/regra_023.gobr"
+      ]
+    },
+    {
+      "id": "teste_038",
+      "tipo": "sintetica",
+      "consulta": "Para todos os vendedores: ativos a cada 7 dias, inativos adimplentes a cada 14, inativos inadimplentes a cada 30 e o restante, como quem nunca comprou, a cada 14 dias.",
+      "relevantes": [
+        "referencias/regra_038.gobr"
+      ]
+    },
+    {
+      "id": "teste_043",
+      "tipo": "sintetica",
+      "consulta": "Todos os clientes da carteira de todos os vendedores a cada 14 dias, sem separar por nenhuma característica.",
+      "relevantes": [
+        "referencias/regra_043.gobr"
+      ]
+    },
+    {
+      "id": "teste_054",
+      "tipo": "sintetica",
+      "consulta": "Carteira de todos os vendedores: quem nunca comprou a cada 14 dias, adimplentes a cada 30 dias e inadimplentes não são agendados.",
+      "relevantes": [
+        "referencias/regra_054.gobr"
+      ]
+    },
+    {
+      "id": "teste_061",
+      "tipo": "sintetica",
+      "consulta": "Uma vendedora específica atende ativos, inativos e sem venda a cada 14 dias. No campo, inativos inadimplentes não agenda e o resto 14 dias. No televendas, não agenda inativos inadimplentes nem quem nunca comprou, e o restante 14 dias.",
+      "relevantes": [
+        "referencias/regra_061.gobr"
+      ]
+    },
+    {
+      "id": "teste_074",
+      "tipo": "sintetica",
+      "consulta": "Todos os vendedores: inativos a cada 45 dias, ativos a cada 21 dias e quem nunca comprou a cada 45 dias, respeitando a preferência de dias do vendedor.",
+      "relevantes": [
+        "referencias/regra_074.gobr"
+      ]
+    },
+    {
+      "id": "teste_083",
+      "tipo": "sintetica",
+      "consulta": "Frequência dinâmica: ativos, inativos e quem nunca comprou usam a frequência média da empresa, em vez de um número fixo de dias.",
+      "relevantes": [
+        "referencias/regra_083.gobr"
+      ]
+    },
+    {
+      "id": "teste_099",
+      "tipo": "sintetica",
+      "consulta": "Televendas: sem venda a cada 7 dias, ativos inadimplentes 30 dias, inativos inadimplentes não agenda, adimplentes 7 dias. Time de campo: todos os clientes restantes a cada 30 dias.",
+      "relevantes": [
+        "referencias/regra_099.gobr"
+      ]
+    },
+    {
+      "id": "teste_107",
+      "tipo": "sintetica",
+      "consulta": "Todos os clientes, inativos, ativos ou sem venda, atendidos de forma quinzenal (15 dias), com a preferência de dias configurada pelo vendedor.",
+      "relevantes": [
+        "referencias/regra_107.gobr"
+      ]
+    },
+    {
+      "id": "teste_116",
+      "tipo": "sintetica",
+      "consulta": "Filiais não são agendadas em nenhum time. Televendas: 7 dias de segunda a sábado, sem coincidir com o campo. Campo: ativos adimplentes 7 dias, ativos inadimplentes 14, inativos adimplentes 30, inativos inadimplentes 60.",
+      "relevantes": [
+        "referencias/regra_116.gobr"
+      ]
+    },
+    {
+      "id": "teste_119",
+      "tipo": "sintetica",
+      "consulta": "Televendas: ativos adimplentes 15 dias, ativos inadimplentes 30, inativos adimplentes 7, inativos inadimplentes não agenda e quem nunca comprou 15 dias.",
+      "relevantes": [
+        "referencias/regra_119.gobr"
+      ]
+    },
+    {
+      "id": "teste_125",
+      "tipo": "sintetica",
+      "consulta": "Todos os vendedores: ativos a cada 7 dias, inativos adimplentes 15 dias, inativos inadimplentes não agenda e prospects, que nunca compraram, 20 dias.",
+      "relevantes": [
+        "referencias/regra_125.gobr"
+      ]
+    },
+    {
+      "id": "teste_165",
+      "tipo": "sintetica",
+      "consulta": "Televendas: não agendar inativos inadimplentes; quem não compra há mais de 90 dias a cada 7 dias; depois 14, 28, 21 e 15 dias conforme a frequência histórica de compra (1 a 7, 16 a 30, 31 a 45 e 61 a 90 dias) e a recência; o resto não agenda.",
+      "relevantes": [
+        "referencias/regra_165.gobr"
+      ]
+    },
+    {
+      "id": "teste_168",
+      "tipo": "sintetica",
+      "consulta": "Televendas com carteiras de rota por cidade: bloquear baixados na Receita e bloqueados; clientes da rota de terça agendados na segunda, da rota de quarta na terça e assim por diante, frequência diária e roteirizável; o restante não agenda.",
+      "relevantes": [
+        "referencias/regra_168.gobr"
+      ]
+    },
+    {
+      "id": "teste_171",
+      "tipo": "sintetica",
+      "consulta": "Televendas: não agendar inadimplentes, bloqueados, filiais e baixados na Receita. Prospects a cada 14 dias, quem fez uma única compra e está cadastrado há 30 dias a cada 10 dias, ativos de alta frequência a cada 14 dias e ativos regulares pela frequência do histórico entre 14 e 28 dias.",
+      "relevantes": [
+        "referencias/regra_171.gobr"
+      ]
+    },
+    {
+      "id": "teste_187",
+      "tipo": "sintetica",
+      "consulta": "Televendas: não agendar baixados na Receita, filiais, inadimplentes, recém-cadastrados nem quem comprou nos últimos 60 dias. Prospects a cada 14 dias e inativos recentes (60 a 90 dias) e médios (90 a 120 dias) a cada 7 dias.",
+      "relevantes": [
+        "referencias/regra_187.gobr"
+      ]
+    },
+    {
+      "id": "teste_202",
+      "tipo": "sintetica",
+      "consulta": "Televendas: sem pedido nos últimos 60 dias a cada 7 dias, quem nunca comprou com o vendedor 7 dias, uma única compra e sem pedido há 7 dias 7 dias, e quem comprou nos últimos 30 dias pela frequência do histórico com máximo de 30 dias.",
+      "relevantes": [
+        "referencias/regra_202.gobr"
+      ]
+    },
+    {
+      "id": "teste_214",
+      "tipo": "sintetica",
+      "consulta": "Televendas, de segunda a sábado: bloquear inadimplentes; quem comprou uma única vez com o vendedor a cada 14 dias, com tratamento diferente para o ramo 29 (21 dias); ativos com frequência histórica abaixo de 14 dias a cada 10 dias.",
+      "relevantes": [
+        "referencias/regra_214.gobr"
+      ]
+    },
+    {
+      "id": "teste_242",
+      "tipo": "sintetica",
+      "consulta": "Televendas pela frequência histórica de compra e pela recência do último pedido: frequência de 0 a 30 dias com último pedido entre 20 e 30 dias atrás, 21 dias; frequência de 61 a 90 com último pedido entre 61 e 90 dias atrás, 15 dias; frequência de 91 a 180 e último pedido entre 120 e 180 dias atrás, 15 dias.",
+      "relevantes": [
+        "referencias/regra_242.gobr"
+      ]
+    }
+  ]
+}
