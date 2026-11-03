@@ -1,0 +1,56 @@
+{
+  "estrategia": "B",
+  "chunk_tokens": 256,
+  "sobreposicao_tokens": 32,
+  "folhas": 90,
+  "nos": 84,
+  "tokens_mediana": 233.0,
+  "tokens_max": 256,
+  "folhas_nunca_principais": [
+    "1.2",
+    "2.0",
+    "3.0",
+    "4.1",
+    "4.1.1",
+    "4.2",
+    "5.0",
+    "5.2",
+    "5.4",
+    "6.0",
+    "6.9",
+    "6.11.1",
+    "7.2",
+    "7.3.2",
+    "7.3.4",
+    "7.3.7",
+    "7.3.11",
+    "7.4.2",
+    "7.5",
+    "8.4.3",
+    "8.4.4",
+    "8.5",
+    "8.5.1",
+    "8.5.3",
+    "8.5.4",
+    "8.6",
+    "9.1.2"
+  ],
+  "caracteres_fora_de_qualquer_chunk": 0,
+  "inalcancaveis_principal": {
+    "dev": [
+      "mdev_10"
+    ],
+    "teste": [
+      "mteste_01",
+      "mteste_02",
+      "mteste_05",
+      "mteste_10",
+      "mteste_16"
+    ]
+  },
+  "inalcancaveis_cobertura": {
+    "dev": [],
+    "teste": []
+  },
+  "segundos_embedding": 164.3
+}

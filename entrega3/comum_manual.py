@@ -45,7 +45,8 @@ BLOCOS = AQUI / "saida" / "manual_blocos.jsonl"
 DIR_INDICES = AQUI / "indices"
 CONJUNTOS = {"dev": "consultas_manual_dev.json", "teste": "consultas_manual_teste.json"}
 ESTRATEGIAS = ("C", "B")
-ESTRATEGIA_PADRAO = "C"   # provisório: o Passo 6 decide pela regra fixada (maior MRR no dev)
+ESTRATEGIA_PADRAO = "C"   # decidido no Passo 6 pela regra fixada: C + vetor + rerank, MRR 0,772 no dev
+RERANK_PADRAO, HIBRIDO_PADRAO = True, False  # idem; o empate com híbrido + rerank caiu no desempate "mais simples"
 
 # Origem de cada parâmetro (ver README da Entrega 3):
 TETO_C = 512       # chunk_size da aula (copy_of_rag_local_llamaindex.py, l. 119-122), usado como TETO: escolha de engenharia

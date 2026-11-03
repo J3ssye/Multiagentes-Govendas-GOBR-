@@ -1,0 +1,25 @@
+{
+  "estrategia": "C",
+  "teto_tokens": 512,
+  "sobreposicao": 0,
+  "folhas": 90,
+  "nos": 94,
+  "tokens_mediana": 164.5,
+  "tokens_max": 511,
+  "folhas_divididas": {
+    "6.1": 2,
+    "6.5": 2,
+    "6.11": 2,
+    "6.13": 2
+  },
+  "nos_acima_do_teto": [],
+  "inalcancaveis_principal": {
+    "dev": [],
+    "teste": []
+  },
+  "inalcancaveis_cobertura": {
+    "dev": [],
+    "teste": []
+  },
+  "segundos_embedding": 248.7
+}
