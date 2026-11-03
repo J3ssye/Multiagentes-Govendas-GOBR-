@@ -1,0 +1,6 @@
+pdfplumber
+llama-index-core
+llama-index-embeddings-huggingface
+sentence-transformers
+transformers
+torch
