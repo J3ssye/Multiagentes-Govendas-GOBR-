@@ -1,0 +1,1687 @@
+# Manual GoBR - texto extraido
+
+<!-- Gerado por extrair_manual.py a partir de govendas-rules.pdf. Nao editar a mao. -->
+
+<!-- p. 1 (PDF 5) -->
+
+## 1 Govendas Business Rules
+
+O Govendas Business Rules (GoBR) é um sistema de regras de negócio que permite:
+
+• Construir e organizar carteiras de clientes para equipes de vendedores;
+
+• Parametrizar o comportamento de atendimento dos clientes segundo as regras comerciais do distribuidor;
+
+• Realizar análise de eventos complexos (como rupturas de venda, inadimplência e campanhas) baseados nessas mesmas regras;
+
+• Automatizar a execução dessas regras em horários pré-definidos ou sob demanda, garantindo que o Govendas reflita dinamicamente as estratégias comerciais do distribuidor.
+
+Essas regras são processadas durante a geração da agenda ou em outros momentos programados, proporcionando maior flexibilidade e dinamismo para que o Govendas se adeque às necessidades específicas de cada distribuidor.
+
+### 1.1 Por que usar o GoBR?
+
+O GoBR é utilizado no momento de planejar ou mapear as ações comerciais do distribuidor. Suas principais vantagens são:
+
+1.Grande poder analítico: acessa dados completos de comportamento dos clientes (recência de visita, recência de compra, inadimplência, ticket médio, etc.) para embasar decisões de negócio.
+
+2.Acesso completo a vendedores e carteiras: permite fazer a melhor distribuição dos ativos de venda entre os times.
+
+3.Alta flexibilidade: mapeia inúmeras regras comerciais de forma simples e customizável para cada distribuidor.
+
+4.Autonomia operacional: as regras podem ser alteradas e executadas a qualquer momento sem necessidade de customizações por parte da equipe de engenharia.
+
+### 1.2 Por que o GoBR é simples?
+
+1.Porque permite descrever as regras em uma linguagem próxima do discurso comercial do distribuidor, sem necessidade de programação.
+
+2.Porque um único conjunto de regras pode mapear centenas de combinações complexas de clientes e vendedores.
+
+3.Porque oferece flexibilidade não só na definição das regras, mas também na forma como elas são aplicadas a conjuntos de vendedores e clientes.
+
+<!-- p. 2 (PDF 6) -->
+
+### 1.3 Como utilizar o GoBR?
+
+Atualmente o GoBR é acessado pela Tela de Administração Govendas (requer VPN interna). Para configurar um conjunto de regras são necessários:
+
+1.Um nome descritivo para o conjunto de regras.
+
+2.Um tipo de execução, que determina quando as regras serão processadas:
+
+| Tipo | Código | Quando executa |
+|---|---|---|
+| DAILY | 2 | Toda madrugada, antes de gerar as agendas |
+| HOURLY | 3 | A cada hora |
+| WEEKLY | 4 | Uma vez por semana, no fim de semana |
+| DETACHED | 5 | Sob demanda (execução manual) |
+| ONLUNCH | 6 | Entre 12:00 e 14:00 |
+| DAWN | 7 | Entre 08:00 e 10:00 |
+| DARK | 8 | Entre 16:00 e 18:00 |
+| HALFANHOUR | 9 | A cada 30 minutos |
+| SHORTLY | 10 | A cada 15 minutos |
+
+1.O ID da empresa à qual a regra pertence.
+
+2.Se a regra está habilitada ou não.
+
+3.O texto com as regras escritas na linguagem gorules.
+
+A combinação do tipo da regra com as configurações internas permite criar comportamentos muito distintos: carteiras que se atualizam diariamente, alertas que disparam a cada hora, parametrizações que só se aplicam nos finais de semana, etc.
+
+<!-- p. 3 (PDF 7) -->
+
+## 2 A linguagem gorules
+
+A linguagem gorules é uma linguagem de domínio específico (DSL — Domain Specific Language) criada para aproximar o contexto comercial dos distribuidores da configuração técnica do Govendas. Ela funciona como uma ponte de comunicação entre o discurso da equipe de vendas e o motor de regras do sistema.
+
+O processador da linguagem gorules é o coração do programa GoBR, sendo executado sempre que as regras precisam ser aplicadas — seja para gerar uma agenda, parametrizar clientes ou disparar alertas.
+
+### 2.1 Exemplos de regras de negócio que a linguagem gorules consegue expressar
+
+A linguagem gorules foi desenvolvida para mapear regras comerciais reais. Alguns exemplos:
+
+• “Os vendedores de campo devem visitar todos os clientes ativos dentro do mês.”
+
+• “Um cliente ativo é aquele que comprou nos últimos 90 dias.”
+
+• “Os televendas devem ligar para todos os clientes visitados pelos vendedores de campo no dia posterior à visita, somente se houver venda.”
+
+• “Os vendedores do supervisor X que atendem a cidade Y devem visitar seus clientes em um período máximo de 7 dias.”
+
+• “Um cliente ativo independente do vendedor não deve ficar mais de 15 dias sem atendimento.”
+
+• “Na primeira sexta-feira de todo mês, os televendas devem ligar para os inativos dos vendedores de campo.”
+
+### 2.2 Estrutura geral de um arquivo gorules
+
+Todo arquivo gorules começa com a declaração de versão e pode conter até quatro categorias de regras, usadas em sequência:
+
+<!-- p. 4 (PDF 8) -->
+
+```
+version 1.0
+
+# 1. Definição de times de vendedores
+time "nome do time":
+    vendedores <seleção>
+
+# 2. Definição de segmentações (opcional)
+segmentacao "nome da segmentação":
+    clientes <seleção>
+    quando <filtros>
+
+# 3. Definição de carteiras OU parametrizações OU alertas OU tags
+carteira "nome da carteira":
+    clientes <seleção>
+    quando <filtros>
+```
+
+As categorias disponíveis de regras são:
+
+| Categoria | Propósito |
+|---|---|
+| time | Define grupos de vendedores que compartilham as mesmas regras comerciais |
+| segmentacao | Define carteiras virtuais de clientes para uso auxiliar (não geram agenda) |
+| carteira | Define a carteira definitiva de clientes dos vendedores (utilizada para gerar agendas) |
+| parametros | Define parâmetros de atendimento (frequência, preferência de dias, roteirização, etc.) |
+| alertas | Gera alertas para vendedores, supervisores e gestores baseados no comportamento dos clientes |
+| tags | Faz marcações nos clientes para facilitar filtros e segmentações |
+
+<!-- p. 5 (PDF 9) -->
+
+## 3 Regras para times de vendedores
+
+O primeiro passo em qualquer conjunto de regras gorules é definir os times de venda. Um time é um grupo de vendedores que compartilham o mesmo conjunto de regras comerciais. O mais comum em distribuidores é organizar os times em torno dos supervisores, mas um time pode ser formado de qualquer maneira.
+
+### 3.1 Estrutura básica de um time
+
+```
+version 1.0
+
+time "supervisor marcos":
+    vendedores todostelevendas
+```
+
+• A linha version 1.0 é obrigatória e deve aparecer no início de cada arquivo de regras.
+
+• A palavra-chave time define o início de um bloco de time, seguida de um nome entre aspas duplas.
+
+• O nome do time é uma referência que será usada em outras partes das regras (em carteiras, parâmetros e alertas). Escolha um nome descritivo.
+
+• A palavra-chave vendedores define qual conjunto de vendedores pertence ao time.
+
+Atenção: o # é utilizado para inserir comentários em qualquer ponto das regras. Tudo após # na mesma linha é ignorado pelo processador.
+
+### 3.2 Múltiplos times no mesmo arquivo
+
+É possível e muito comum definir vários times em um mesmo conjunto de regras:
+
+```
+version 1.0
+
+time "supervisor marcos":
+    vendedores todostelevendas
+
+time "supervisora maria":
+    vendedores todosdecampo
+
+time "vendedor avulso":
+    vendedores porid("1020", "1021")
+```
+
+<!-- p. 6 (PDF 10) -->
+
+Neste exemplo: - O time "supervisor marcos" contém todos os vendedores do tipo televendas. - O time "supervisora maria" contém todos os vendedores de campo. - O time "vendedor avulso" contém apenas os vendedores com os IDs "1020" e "1021".
+
+### 3.3 Funções de seleção de vendedores
+
+A seleção de vendedores é feita por meio das seguintes funções, usadas após a palavra-chave
+
+```
+vendedores:
+```
+
+| Função | Descrição |
+|---|---|
+| todos | Seleciona todos os vendedores cadastrados na empresa no Govendas |
+| todostelevendas | Seleciona apenas os vendedores do tipo televendas |
+| todosdecampo | Seleciona apenas os vendedores do tipo campo (presencial) |
+| porid("id1", "id2", ...) | Seleciona vendedores específicos pelos seus IDs no sistema, passados como strings separadas por vírgula |
+
+#### 3.3.1 Opções de refinamento (modificadores opcionais)
+
+As funções todos, todostelevendas e todosdecampo aceitam os seguintes modificadores opcionais, nesta ordem:
+
+| Modificador | Descrição |
+|---|---|
+| dos supervisores("id1", "id2", ...) | Restringe a seleção apenas aos vendedores que pertencem aos supervisores especificados pelos seus IDs |
+| do supervisor("id") | Variante singular para um único supervisor |
+| ativados | Inclui apenas vendedores habilitados para gerar agendas no Govendas |
+| inativados | Inclui apenas vendedores desabilitados no Govendas (útil para regras de limpeza ou análise) |
+| menos("id1", "id2", ...) | Exclui da seleção os vendedores com os IDs especificados |
+
+<!-- p. 7 (PDF 11) -->
+
+Importante: ativados e inativados referem-se ao status cadastral do vendedor no Govendas, ou seja, se ele está habilitado ou não para gerar agendas. Não confundir com ativo/inativo de clientes.
+
+Atenção (em desenvolvimento): ainda não foram implementadas regras como: “cadastrados no Govendas”, “não cadastrados no Govendas”, “com muitos clientes”, “com poucos clientes”, “junto a supervisor com poucos vendedores”, etc.
+
+### 3.4 Exemplo completo com modificadores
+
+```
+version 1.0
+
+time "supervisor marcos":
+    vendedores todostelevendas
+    vendedores todosdecampo
+                dos supervisores("13","14")
+                ativados
+                menos("345","567","432")
+```
+
+Neste exemplo, o time "supervisor marcos" é composto por: - Todos os vendedores televendas (sem restrição de supervisor ou status). - Todos os vendedores de campo que pertencem aos supervisores com IDs "13" e "14", que estejam ativados no Govendas, excluindo os vendedores
+
+```
+"345", "567" e "432".
+```
+
+Perceba que um mesmo time pode ter múltiplas linhas vendedores, cada uma com suas próprias restrições. Eles são combinados de forma aditiva.
+
+### 3.5 Cláusulas e restrições para definir times
+
+• Repetição entre times: o mesmo vendedor pode aparecer em times diferentes. Isso é permitido e útil quando um vendedor precisa seguir regras de mais de um contexto comercial.
+
+• Unicidade por time: dentro de um mesmo time, um vendedor só é contado uma vez, mesmo que apareça em múltiplas linhas vendedores.
+
+• Referências únicas: os nomes dos times devem ser distintos entre si no mesmo arquivo.
+
+• Vendedores cadastrados: todos os vendedores referenciados devem estar cadastrados no Govendas.
+
+<!-- p. 8 (PDF 12) -->
+
+## 4 Regras para carteiras e segmentações de clientes
+
+### 4.1 O que são carteiras e segmentações?
+
+Após definir os times, o próximo passo é associar grupos de clientes a esses times. Existem dois mecanismos para isso:
+
+#### 4.1.1 Carteira
+
+A carteira é o conjunto definitivo de clientes de um vendedor. Ela é utilizada pelo Gerador de Agendas do Govendas para determinar quais clientes cada vendedor deve atender em determinado período. O GoBR não exclui clientes nem monta agendas diretamente — ele apenas constrói as carteiras, que são então consumidas pelo gerador de agendas.
+
+#### 4.1.2 Segmentação
+
+A segmentação é um agrupamento auxiliar de clientes que não é utilizado para gerar agendas diretamente. Segmentações são úteis quando se precisa: - Criar subconjuntos de clientes para usar como base em carteiras ou parâmetros; - Fazer parametrizações para um grupo específico sem afetar o agendamento principal; - Criar tags para grupos de clientes com características particulares.
+
+Resumo prático: use carteira quando os clientes precisam aparecer na agenda do vendedor. Use segmentacao quando precisa de um grupo de clientes para regras auxiliares sem gerar agenda.
+
+### 4.2 Carteiras exclusivas vs. carteiras livres
+
+Existe ainda um segundo tipo de carteira chamada carteira livre:
+
+| Tipo | Comportamento |
+|---|---|
+| carteira "nome": | Carteira exclusiva: os clientes incluídos nela são removidos do pool disponível para carteiras definidas posteriormente no mesmo arquivo. Isso evita que o mesmo cliente apareça em múltiplas carteiras de times diferentes. |
+| carteira livre "nome": | Carteira não-exclusiva: os clientes incluídos não são removidos do pool disponível. Os mesmos clientes podem aparecer simultaneamente em outras carteiras. |
+
+<!-- p. 9 (PDF 13) -->
+
+### 4.3 Exemplos de uso de carteiras
+
+#### 4.3.1 Cenário 1 — Carteira fixa com ruptura de positivação
+
+O distribuidor quer que os televendas do supervisor Marcos atendam: 1. Seus clientes fixos. 2. Clientes em ruptura de positivação há mais de 90 dias que estão na carteira da supervisora Maria (campo).
+
+```
+version 1.0
+
+time "superv marcos":
+    vendedores todostelevendas
+
+time "superv maria":
+    vendedores todosdecampo
+
+carteira "televendas fixa com ruptura de campo":
+    clientes carteirafixa("superv marcos")
+    clientes ruptura("superv maria" para "superv marcos")
+                de positivacao(90 dias)
+```
+
+Resultado: cada vendedor televendas do supervisor Marcos terá em sua carteira seus clientes fixos mais os clientes do time da supervisora Maria que não compram há mais de 90 dias. Os clientes em ruptura que já pertencem à carteira fixa de algum televendas podem aparecer nas duas carteiras (carteira fixa do televendas original + carteira de ruptura do televendas de ruptura).
+
+#### 4.3.2 Cenário 2 — Filtro adicional sobre os clientes com quando
+
+Além de selecionar os clientes, é possível filtrar o resultado com a cláusula quando:
+
+<!-- p. 10 (PDF 14) -->
+
+```
+version 1.0
+
+time "superv marcos":
+    vendedores todostelevendas
+
+time "superv maria":
+    vendedores todosdecampo
+
+carteira "televendas fixa com ruptura de campo":
+    clientes ruptura("superv maria" para "superv marcos")
+                de positivacao(90 dias)
+    clientes carteirafixa("superv marcos")
+    quando recencia de visita entre 10 dias e 90 dias
+```
+
+```
+O filtro quando recencia de visita entre 10 dias e 90 dias na linha 13 garante que
+```
+
+apenas clientes cuja última visita ocorreu entre 10 e 90 dias atrás serão incluídos. Filtros com quando podem ser combinados com e:
+
+```
+quando recencia de visita entre 10 dias e 90 dias
+       e adimplentes
+```
+
+Atenção: há diversas regras de filtragem de clientes (ver seção Regras para Filtros de Clientes). Elas podem ser combinadas com e.
+
+#### 4.3.3 Cenário 3 — Separando carteiras para controle de exclusividade
+
+Quando os clientes em ruptura devem pertencer apenas à carteira do vendedor de ruptura (e não também à carteira fixa), usa-se carteiras separadas:
+
+<!-- p. 11 (PDF 15) -->
+
+```
+version 1.0
+
+time "superv marcos":
+    vendedores todostelevendas
+
+time "superv maria":
+    vendedores todosdecampo
+
+carteira "televendas fixa":
+    clientes carteirafixa("superv marcos")
+
+carteira "televendas com ruptura de campo":
+    clientes ruptura("superv maria" para "superv marcos")
+                 de positivacao(90 dias)
+```
+
+Ao separar em duas carteiras, os clientes incluídos na primeira carteira "televendas fixa" não
+
+```
+estarão disponíveis para a segunda carteira "televendas com ruptura de campo". A ordem
+```
+
+das carteiras importa!
+
+Se a preferência deve ser para a ruptura (ou seja, a ruptura tem prioridade sobre a carteira fixa), basta inverter a ordem:
+
+```
+carteira "televendas com ruptura de campo":
+    clientes ruptura("superv maria" para "superv marcos")
+                de positivacao(90 dias)
+
+carteira "televendas fixa":
+    clientes carteirafixa("superv marcos")
+```
+
+<!-- p. 12 (PDF 16) -->
+
+#### 4.3.4 Cenário 4 — Múltiplos times com carteiras
+
+```
+version 1.0
+
+time "superv marcos":
+    vendedores todostelevendas
+
+time "superv maria":
+    vendedores todosdecampo
+
+time "vendedor avulso":
+    vendedores porid("1020")
+
+# Televendas recebem clientes fixos + ruptura de campo
+carteira "televendas fixa com ruptura de campo":
+    clientes carteirafixa("superv marcos")
+    clientes ruptura("superv maria" para "superv marcos")
+                de positivacao(90 dias)
+
+# Vendedor avulso recebe clientes em ruptura de visita do campo
+carteira "vendedor 1020":
+    clientes ruptura("superv maria" para "vendedor avulso")
+                de visita(1 mes)
+
+# Campo recebe sua carteira fixa com o que sobrou
+carteira "campo com carteira fixa":
+    clientes carteirafixa("superv maria")
+```
+
+O que acontece neste exemplo:
+
+• O vendedor 1020 só recebe clientes da supervisora Maria que estão em ruptura de visita há mais de 1 mês e que não foram incluídos na carteira dos televendas. Sua carteira pode eventualmente ficar vazia.
+
+• O time de campo recebe apenas os clientes que sobraram depois que os televendas e o vendedor avulso receberam os seus.
+
+Atenção: se as duas últimas carteiras estivessem na ordem inversa (campo primeiro, depois vendedor 1020), a carteira do campo tomaria todos os clientes via carteirafixa e o vendedor 1020 ficaria sempre sem clientes, pois todos já teriam sido alocados.
+
+<!-- p. 13 (PDF 17) -->
+
+### 4.4 Exemplos de uso de carteiras livres
+
+As carteiras livres são úteis quando um conjunto de clientes deve estar em uma carteira, mas sem impedir que esses mesmos clientes apareçam em outras carteiras.
+
+```
+version 1.0
+
+time "superv marcos":
+    vendedores todostelevendas
+
+time "superv maria":
+    vendedores todosdecampo
+
+# Carteira livre: os clientes em ruptura entram nos televendas,
+# mas continuam disponíveis para outras carteiras também.
+carteira livre "televendas com ruptura de campo":
+    clientes ruptura("superv maria" para "superv marcos")
+                de positivacao(90 dias)
+
+# A carteira fixa do campo inclui todos os clientes fixos,
+# mesmo os que já entraram na carteira livre acima.
+carteira "campo fixo":
+    clientes carteirafixa("superv maria")
+```
+
+Neste exemplo, os clientes em ruptura aparecem na carteira dos televendas (carteira livre) e podem também aparecer na carteira fixa do campo — sem que uma carteira exclua a outra.
+
+### 4.5 Exemplos de uso de segmentações
+
+Segmentações são usadas para criar agrupamentos auxiliares de clientes. No exemplo abaixo, cria-se uma segmentação dos clientes adimplentes da supervisora Maria:
+
+<!-- p. 14 (PDF 18) -->
+
+```
+version 1.0
+
+time "superv marcos":
+    vendedores todostelevendas
+
+time "superv maria":
+    vendedores todosdecampo
+
+time "vendedor avulso":
+    vendedores porid("1020")
+
+# Segmentação auxiliar: apenas clientes adimplentes da carteira fixa
+segmentacao "carteiras adimplentes da superv maria":
+    clientes carteirafixa("superv maria")
+    quando adimplentes
+
+# Carteira de televendas com ruptura sobre os clientes fixos do campo
+carteira "televendas fixa com ruptura de campo":
+    clientes carteirafixa("superv marcos")
+    clientes ruptura("superv maria" para "superv marcos")
+                de positivacao(90 dias)
+
+# Carteira livre usando a segmentação (somente adimplentes)
+carteira livre "campo com carteira fixa":
+    clientes segmentados("carteiras adimplentes da superv maria")
+
+# Carteira do vendedor avulso usando ruptura da segmentação
+carteira "vendedor 1020":
+    clientes ruptura da segmentacao("carteiras adimplentes da superv maria" para "vendedor avulso")
+                de visita(1 mes)
+```
+
+Neste exemplo, somente os clientes adimplentes são incluídos na carteira fixa de campo. Para o vendedor 1020, usa-se ruptura da segmentacao para pegar os clientes do segmento que estão em ruptura de visita — algo impossível de fazer sem a segmentação como intermediária.
+
+Atenção: na criação de uma carteira só é permitida a inclusão de uma única segmentação como fonte de clientes. Na criação de outras segmentações, é permitida a inclusão de várias segmentações.
+
+<!-- p. 15 (PDF 19) -->
+
+### 4.6 Conjunto de funções para selecionar clientes
+
+A seleção de clientes é feita por meio das seguintes funções, usadas após a palavra-chave
+
+```
+clientes:
+```
+
+| Função | Descrição |
+|---|---|
+| carteirafixa(<<time>>) | Seleciona os clientes da carteira fixa (portfólio permanente) de cada vendedor do time informado |
+| carteiraacessivel(<<time>>) | Seleciona os clientes da carteira acessível de cada vendedor do time |
+| carteiraruptura(<<time>>) | Seleciona os clientes da carteira de ruptura pré-calculada de cada vendedor do time |
+| portfolio(<<time>>) | Seleciona o portfólio completo dos vendedores do time |
+| inativos(<<time>>, <<tempo de inatividade>>) | Seleciona clientes inativos há pelo menos o tempo especificado |
+| segmentados(<<segmentacao>>) | Seleciona os clientes pertencentes a uma segmentação já definida |
+| ruptura(<<time_origem>> para <<time_destino>>) | Seleciona clientes do time de origem que estão em ruptura e os associa ao time de destino |
+| ruptura da segmentacao(<<segmentacao>> para <<time>>) | Seleciona clientes de uma segmentação que estão em ruptura e os associa ao time de destino |
+| todos(<<time>>) | Seleciona todos os clientes do sistema para o time |
+
+#### 4.6.1 Opções para a função ruptura
+
+A ruptura pode ser configurada para detectar diferentes tipos de situação:
+
+| Opção | Descrição |
+|---|---|
+| de positivacao(<<tempo>>) | Cliente sem compra/positivação há pelo menos o tempo especificado |
+| de positivacao(<<tempo>>) ou prospects | Idem, incluindo também os prospects (clientes que nunca compraram) |
+| de visita(<<tempo>>) | Cliente sem visita há pelo menos o tempo especificado |
+| de visita(<<tempo>>) ou prospects | Idem, incluindo prospects |
+| de inativos(<<time>>, <<tempo>>) | Clientes inativos de um time específico há pelo menos o tempo especificado |
+| de inativos(<<time>>, <<tempo>>) ou prospects | Idem, incluindo prospects |
+
+<!-- p. 16 (PDF 20) -->
+
+É possível combinar mais de uma opção de ruptura:
+
+```
+carteira "ruptura de campo":
+    clientes ruptura("superv maria" para "superv marcos")
+                de positivacao(90 dias)
+                e de visita(30 dias)
+```
+
+Neste exemplo, apenas clientes que estão simultaneamente em ruptura de positivação (90 dias) e ruptura de visita (30 dias) serão incluídos.
+
+### 4.7 Cláusulas e restrições para carteiras e segmentações
+
+• Evitar regras em excesso: toda regra deve ser aplicada a um time, não diretamente a um vendedor individual. Isso garante escalabilidade e evita manutenção complexa.
+
+• Regras incrementais: as regras de carteira apenas adicionam clientes — nunca os excluem diretamente. A exclusão ocorre de forma indireta, pela ordem das carteiras.
+
+• Repetição de clientes em carteiras normais: clientes podem aparecer em carteiras de vendedores diferentes dentro da mesma carteira (ex.: dois televendas diferentes podem receber o mesmo cliente em ruptura, se ele pertencer às carteiras de ambos).
+
+• Sem repetição entre carteiras normais consecutivas: clientes que já foram atribuídos a uma carteira anterior não são incluídos nas carteiras seguintes (exceto em carteiras livres).
+
+• Carteiras livres: não causam exclusão de clientes para carteiras subsequentes.
+
+• Dependências: uma segmentação pode ser criada a partir de vários times e/ou várias segmentações. Uma carteira pode ser criada a partir de vários times ou de uma única segmentação.
+
+<!-- p. 17 (PDF 21) -->
+
+• A ordem importa: a sequência em que as carteiras são definidas determina quais clientes ficam disponíveis para cada uma delas (com exceção das carteiras livres).
+
+• Referências únicas: os nomes das carteiras e das segmentações devem ser distintos entre si.
+
+Padrão automático: caso um time seja usado em parâmetros ou alertas sem que uma carteira correspondente tenha sido definida, o sistema assume automaticamente a carteirafixa daquele time.
+
+<!-- p. 18 (PDF 22) -->
+
+## 5 Regras para filtros temporais
+
+Os filtros temporais permitem restringir quando uma regra de parametrização ou alerta deve ser executada. Eles são aplicados logo após a referência ao time ou carteira, usando a estrutura natural da linguagem.
+
+### 5.1 Como usar filtros temporais
+
+```
+na carteira("televendas")
+no dia 2 e no dia 12 e
+      no domingo e na segunda e
+      na primeira semana e
+      no segundo semestre
+```
+
+Neste exemplo, a parametrização ou alerta só será executado se o dia for no dia 2 ou dia 12, e no domingo ou segunda-feira, na primeira semana do mês, durante o segundo semestre do ano. Todos os filtros são combinados com e.
+
+Para alertas, é possível adicionar um filtro de horário:
+
+```
+na carteira("televendas")
+nos dias uteis e de hora em hora a partir de '07:00'
+```
+
+Neste caso, o alerta só disparará em dias úteis, a cada hora, a partir das 7h da manhã.
+
+Regra de aplicação: os filtros devem ser escritos sempre nesta ordem: (1) dia do mês fi (2) dia
+
+da semana fi (3) semana do mês fi (4) mês do ano fi (5) horário. Não é obrigatório colocar todos.
+
+### 5.2 Filtros de dia do mês
+
+| Filtro | Descrição |
+|---|---|
+| no dia 10 | Apenas no dia 10 de cada mês |
+| no ultimo dia do mês | Apenas no ultimo dia do mês |
+| antes do dia 20 | Apenas entre os dias 1 e 19 do mês |
+| depois do dia 15 | Apenas entre os dias 16 e o último dia do mês |
+| a partir do dia 12 | Apenas entre os dias 12 e o último dia do mês |
+| entre os dias 12 e 30 | apenas entre os dias 12 e 30 do mês |
+
+<!-- p. 19 (PDF 23) -->
+
+### 5.3 Filtros de dia da semana
+
+| Filtro | Descrição |
+|---|---|
+| na segunda | Apenas às segundas-feiras |
+| na terça | Apenas às terças-feiras |
+| na quarta | Apenas às quartas-feiras |
+| na quinta | Apenas às quintas-feiras |
+| na sexta | Apenas às sextas-feiras |
+| no sabado | Apenas aos sábados |
+| no domingo | Apenas aos domingos |
+| todos os dias | Todos os dias da semana |
+| nos dias uteis | De segunda a sexta-feira |
+| no fim de semana | Sábado e domingo |
+
+### 5.4 Filtros de semana do mês
+
+| Filtro | Descrição |
+|---|---|
+| na primeira semana | Dias 1 ao 7 do mês |
+| na segunda semana | Dias 8 ao 14 do mês |
+| na terceira semana | Dias 15 ao 21 do mês |
+| na quarta semana | Dias 22 ao 28 do mês |
+| na ultima semana | Últimos 7 dias do mês |
+| na primeira quinzena | Dias 1 ao 15 do mês |
+| na segunda quinzena | Dias 16 ao fim do mês |
+
+<!-- p. 20 (PDF 24) -->
+
+### 5.5 Filtros de mês do ano
+
+Os filtros de mês permitem especificar meses individuais ( em janeiro, em fevereiro, …, em dezembro) ou períodos maiores:
+
+| Filtro | Meses abrangidos |
+|---|---|
+| no primeiro bimestre | Janeiro e fevereiro |
+| no segundo bimestre | Março e abril |
+| no terceiro bimestre | Maio e junho |
+| no quarto bimestre | Julho e agosto |
+| no quinto bimestre | Setembro e outubro |
+| no sexto bimestre | Novembro e dezembro |
+| no primeiro trimestre | Janeiro a março |
+| no segundo trimestre | Abril a junho |
+| no terceiro trimestre | Julho a setembro |
+| no quarto trimestre | Outubro a dezembro |
+| no primeiro semestre | Janeiro a junho |
+| no segundo semestre | Julho a dezembro |
+
+### 5.6 Filtros de horário (somente para alertas)
+
+Os filtros de horário se aplicam exclusivamente a regras de alertas e permitem controlar o momento exato do disparo:
+
+<!-- p. 21 (PDF 25) -->
+
+| Filtro | Descrição |
+|---|---|
+| às 'hh:mm' | Dispara no horário exato especificado (janela de até 15 minutos) |
+| às 'hh:mm' e às 'hh:mm' | Dispara em múltiplos horários específicos |
+| de hora em hora | Dispara a cada hora, o dia todo |
+| de hora em hora entre 'hh:mm' e 'hh:mm' | Dispara a cada hora dentro do intervalo especificado |
+| de hora em hora a partir de 'hh:mm' | Dispara a cada hora a partir do horário especificado |
+
+Obs.: só é permitido usar uma das regras de horário por vez ( às ou de hora em hora).
+
+Obs.: Se a checagem ocorre a cada 15 minutos e o filtro é às '15:00', o evento será lançado se o horário atual estiver entre 15:00 e 15:15.
+
+<!-- p. 22 (PDF 26) -->
+
+## 6 Regras para filtros de clientes
+
+Os filtros de clientes são usados com a palavra-chave quando para restringir quais clientes de uma carteira, time ou segmentação serão afetados por uma regra de carteira, parametrização ou alerta. Múltiplos filtros podem ser combinados com e.
+
+```
+quando adimplentes
+       e ativos para o vendedor
+       e recencia de visita entre 10 dias e 90 dias
+```
+
+A seguir, os principais grupos de filtros disponíveis:
+
+### 6.1 Filtros de atividade e inatividade
+
+Estes filtros determinam o estado do cliente em relação às compras e visitas recebidas:
+
+| Filtro | Descrição |
+|---|---|
+| ativos | Clientes considerados ativos pelos critérios padrão do sistema |
+| ativos para o vendedor | Clientes ativos segundo o histórico do vendedor específico |
+| ativos para a empresa | Clientes ativos segundo o histórico de qualquer vendedor da empresa |
+| inativos | Clientes considerados inativos pelos critérios padrão |
+| inativos para o vendedor | Clientes sem compra com o vendedor específico há tempo suficiente para serem inativos |
+| inativos para a empresa | Clientes sem compra com nenhum vendedor da empresa |
+| inatividade de <<N>> dias | Clientes sem compra há pelo menos N dias («tempo») |
+| inatividade global de <<N>> dias | Clientes sem compra com a empresa toda há pelo menos N dias («tempo») |
+| sem venda ou prospects | Clientes que nunca compraram |
+| unica compra com a empresa | Clientes que só compraram uma única vez com a empresa |
+| unica compra com o vendedor | Clientes que só compraram uma única vez com o vendedor |
+| prospects do vendedor | Clientes que nunca compraram com o vendedor específico |
+| prospects da empresa | Clientes que nunca compraram com a empresa |
+| tem venda do vendedor <<condicional de tempo>> | Clientes que compraram do vendedor no período especificado sem necessariamente ter sido a última compra |
+| não tem venda <<condicional de tempo>> | Clientes que não tem venda de nenhum vendedor do mesmo grupo no período especificado |
+| tem venda da empresa <<condicional de tempo>> | Clientes que compraram de qualquer vendedor no período especificado |
+| tem <<N>>% de visita remota <<tempo>> | Cliente que tiveram pelo menos N% de visitas remotas em relação as presenciais no tempo especificado |
+| tem <<N>>% de visita incerta <<tempo>> | Cliente que tiveram pelo menos N% de visitas que não se sabe ser foram remotas ou presenciais no tempo especificado |
+| atividade global de <<tempo>> | Se o cliente comprou no tempo especificado |
+| atividade do vendedor de <<tempo>> | Se o cliente comprou do vendedor no tempo especificado |
+| atividade de <<tempo>> | Se o cliente comprou de algum vendedor do grupo no tempo especificado |
+
+<!-- p. 23 (PDF 27) -->
+
+```
+As opções venda podem ser: do vendedor ou da empresa.
+```
+
+Opções para <<tempo>> estão abaixo.
+
+As opções de <<condicional de tempo>> estão abaixo.
+
+### 6.2 Filtros de recência de visita ou positivação (compra)
+
+| Filtro | Descrição |
+|---|---|
+| recencia de visita <<condicional de tempo>> | Clientes cuja última visita ocorreu no intervalo especificado por algum vendedor do mesmo grupo do vendedor que tem o cliente na carteira |
+| recencia de positivação global ... | Clientes cuja última positivação ocorreu no intervalo especificado por qualquer vendedor da empresa |
+| recencia de visita do vendedor ... | Clientes cuja última visita ocorreu no intervalo especificado foi do vendedor que tem o cliente na carteira |
+| fora da recencia de visita <<condicional de tempo>> | Clientes cuja última visita ocorreu fora do intervalo especificado por algum vendedor do mesmo grupo do vendedor que tem o cliente na carteira |
+| fora da recencia de visita global ... | Clientes cuja última visita ocorreu fora do intervalo especificado por qualquer vendedor da empresa |
+| fora da recencia de positivação do vendedor ... | Clientes cuja última positivação ocorreu fora do intervalo especificado foi do vendedor que tem o cliente na carteira |
+
+<!-- p. 24 (PDF 28) -->
+
+As duas opções são possíveis: visita ou positivação.
+
+As opções de <<condicional de tempo>> estão abaixo.
+
+### 6.3 Filtros financeiros
+
+| Filtro | Descrição |
+|---|---|
+| adimplentes | Clientes sem pendências financeiras em aberto |
+| inadimplentes | Clientes com pendências financeiras em aberto |
+| tem credito | Clientes com crédito disponível |
+| não tem credito | Clientes sem crédito disponível |
+| com limite de R$ <<valor>> de credito | Clientes com limite de crédito maior ou igual ao valor especificado |
+| com R$ <<valor>> de credito | Clientes com pelo menos o valor especificado de crédito |
+| com menos de R$ <<valor>> de credito disponivel | Clientes com crédito disponível abaixo do valor especificado |
+| com <<N>>% de credito | Clientes com a porcentagem de crédito, em relação ao limite, maior ou igual a especificada |
+| com ticket medio maior que R$ <<valor>> | Clientes com ticket médio acima do valor |
+| com ticket medio igual a R$ <<valor>> | Clientes com ticket médio igual ao valor |
+| total faturado no <<periodo>> com a empresa maior que R$ <<valor>> | Clientes com faturamento acima do valor no período |
+| total faturado no <<periodo>> com a empresa menor que R$ <<valor>> e maior que R$ <<valor>> | Clientes com faturamento dentro dos valores no período |
+| media faturada no <<periodo>> com a empresa menor que R$ <<valor>> e maior que R$ <<valor>> | Clientes com faturamento medio por mês no período dentro dos valores especificados |
+
+<!-- p. 25 (PDF 29) -->
+
+Para os filtros de ticket médio e faturamento, o parâmetro ou indefinido pode ser adicionado ao final para incluir também os clientes cujo valor é desconhecido no sistema. Também podem ser combinados maior que, menor que e igual a utilizando um e.
+
+```
+O <<periodo>> pode ser: mês, bimestre, trimestre, semestre e ano
+```
+
+### 6.4 Filtros de agenda
+
+Estes filtros verificam se o cliente já está ou não presente em agendas passadas:
+
+| Filtro | Descrição |
+|---|---|
+| na agenda de hoje | O cliente está na agenda padrão de hoje («tempo fixo») |
+| na agenda do vendedor de ontem | O cliente estava agendado para o vendedor ontem |
+| na agenda na semana | O cliente foi agendado na semana atual |
+| fora da agenda de hoje | O cliente não está agendado para hoje |
+| na agenda do vendedor de hoje | O cliente está na agenda do vendedor específico hoje |
+| na agenda global de hoje | O cliente está na agenda de qualquer vendedor hoje |
+| fora da agenda padrão em 5 dias | O cliente não foi agendado na agenda padrão nos últimos 5 dias («tempo») |
+| na agenda de ruptura de hoje | Na agenda de ruptura do dia |
+| na agenda complementar de hoje | Na agenda complementar do dia |
+| agendavel | O cliente está marcado como agendável, ou seja, está parametrizado para agendar |
+| não agendavel | O cliente está marcado como não agendável, ou seja, está parametrizado para não agendar |
+| reagendado | O cliente foi reagendado para algum vendedor do grupo de vendedores |
+| não reagendado para a empresa | O cliente não foi reagendado por nenhum vendedor da empresa |
+
+<!-- p. 26 (PDF 30) -->
+
+As opções de agenda são: padrão, ruptura e complementar. Se não for especificada será considerada a agenda padrão (default). As opções de reagendado podem ser: para o vendedor
+
+```
+ou para a empresa.
+```
+
+Podem ser utilizados o <<tempo>> ou ‘«tempo fixo»’ para definição do período de análise valorado ou fixo, respectivamente.
+
+### 6.5 Filtros de localização e classificação
+
+| Filtro | Descrição |
+|---|---|
+| nome da cidade igual("cidade1", "cidade2") | Clientes na cidade especificada |
+| nome do bairro diferente(...) | Clientes em bairro diferente da especificada |
+| uf do estado contém("SP", "MG") | Clientes cujo nome da UF do estado contém o texto informado |
+| nome da rota inicia com(...) | Clientes cujo nome da rota começa com o texto informado |
+| conteudo da nota igual(...) | Clientes cujo conteudo da nota é igual a um dos valores especificados |
+| nome da nota contém(...) | Clientes cujo nome da nota contém um dos textos especificados |
+| o rótulo diferente(...) | Clientes cujo rótulo de classificação é diferente de todos os valores especificados |
+| cnae igual(...) | Clientes cujo id do cnae mapeado pelo govendas é igual a um dos ids especificados |
+| cnae da receita igual(...) | Clientes cujo id do cnae que consta na receita federal é igual a um dos ids especificados |
+| cnae do erp igual(...) | Clientes cujo id do cnae mapeado no ERP é igual a um dos ids especificados |
+| nome do cnae da receita inicia com(...) | Clientes cujo nome do cnae que consta na receita federal começa com um dos textos informados |
+| status na receita federal definido como ativa | Empresa ativa na Receita Federal |
+| status na receita federal definido como suspensa | Empresa suspensa |
+| status na receita federal definido como inapta | Empresa inapta |
+| status na receita federal definido como baixada | Empresa baixada |
+| pessoa fisica | Apenas clientes pessoa física (CPF) |
+| pessoa juridica | Apenas clientes pessoa jurídica (CNPJ) |
+| cliente principal | O registro é o cliente principal (não é filial) |
+| cliente filial | O registro é uma filial |
+| excluidos | Clientes marcados como excluídos do sistema |
+| não excluidos | Clientes que não estão excluídos |
+| bloqueados | Clientes bloqueados para atendimento |
+| não bloqueados | Clientes que não estão bloqueados para atendimento |
+| tem coordenada confiavel | Cliente com geolocalização validada |
+| não tem coordenada confiavel | Cliente com geolocalização ausente ou não confiável |
+
+<!-- p. 28 (PDF 32) -->
+
+As opções para todos os filtros com textos são: ìgual, diferente, contém e inicia com
+
+### 6.6 Filtros de classificação por id
+
+| Filtro | Descrição |
+|---|---|
+| ramo de atividade igual("1", "12") | Filtro por id do ramo de atividade comercial igual a um dos valores |
+| código da rota diferente("4", "7", "14") | Filtro por código da rota diferente dos valores |
+| id do cliente igual(...) | Filtra por ID(s) específico(s) do cliente |
+| id do cliente principal diferente(...) | Filtro por id do cliente principal diferente do especificado |
+| tipo de pagamento igual(...) | Filtra por id de pagamento igual a um dos valores |
+| tipo de cobranca diferente(...) | Filtra por id de cobrança diferente dos valores |
+
+As opções para todos os filtros com id são: são: ìgual e diferente
+
+### 6.7 Filtros de curva ABC e ciclo de vida
+
+| Filtro | Descrição |
+|---|---|
+| curva A com a empresa | Clientes da curva A de faturamento com a empresa |
+| curva B com a empresa | Clientes da curva B de faturamento com a empresa |
+| curva C com a empresa | Clientes da curva C de faturamento com a empresa |
+| curva A com o vendedor | Clientes da curva A com o vendedor específico |
+| no ciclo de vida ativo com o vendedor | Cliente ativo no ciclo de vida do vendedor, fez alguma compra |
+| no ciclo de vida inativo com a empresa | Cliente inativo no ciclo de vida da empresa |
+| no ciclo de vida prospect com o vendedor | Cliente prospect no ciclo de vida do vendedor |
+| no ciclo de vida ativado com o vendedor | Cliente que fez uma compra com o vendedor quando era prospect |
+| no ciclo de vida reativado com a empresa | Cliente que fez uma compra com qualquer vendedor quando estava inativo |
+
+<!-- p. 29 (PDF 33) -->
+
+As opções para os filtros são com a empresa ou com o vendedor.
+
+### 6.8 Filtros de frequência e parâmetros
+
+| Filtro | Descrição |
+|---|---|
+| não tem parametro | Cliente sem nenhuma parametrização configurada |
+| não tem parametro manual | Cliente sem parametrização feita manualmente por um usuário |
+| fora da frequencia de venda ou maior que <<N>> dias | Cliente com recência atual fora da frequência de venda calculada, ou com uma recência atual maior que N dias («tempo») |
+| fora da frequencia de venda indicada <<condicional de tempo>> | Cliente com recência fora da frequência de venda estipulada como ideal analizando as movimentações dentro do período de tempo especificado |
+| frequencia historica maior que <<N>> dias | A frequência histórica do cliente é maior que N dias («tempo») |
+| frequencia historica menor que <<N>> dias ou indefinida | A frequência histórica do cliente é menor que N dias ou não foi possível ser calculada |
+| frequencia historica entre <<N>> dias e <<Y>> dias | A frequência histórica do cliente está no intervalor que N dias e Y dias |
+| atendimentos <<N>>% menor que o parametrizado | Volume de atendimentos abaixo do esperado |
+| atendimentos <<N>>% maior que o parametrizado | Volume de atendimentos acima do esperado |
+| a ultima positivacao <<N>>% menor que o ticket medio | A última venda foi menor que o ticket médio |
+| a ultima positivacao <<N>>% maior que o ticket medio | A última venda foi maior que o ticket médio |
+| parametro de frequencia <<N>>% menor que o previsto | A parametrização atual tem frequência menor que a prevista/calculada |
+| parametro de frequencia <<N>>% maior que o previsto | A parametrização ataul tem frequência maior que a prevista/calculada |
+
+<!-- p. 30 (PDF 34) -->
+
+O filtro “fora da frequencia de venda” tem as opções indicada e ou maior que. O filtro “frequencia historica” pode incluir a opção indefinida.
+
+Opções para <<tempo>> estão abaixo.
+
+As opções de <<condicional de tempo>> estão abaixo.
+
+### 6.9 Filtros de segmentação (contido/não contido)
+
+| Filtro | Descrição |
+|---|---|
+| contido na segmentacao("nome1", "nome2") | O cliente pertence às segmentações especificadas |
+| não contido na segmentacao("nome") | O cliente não pertence à segmentação especificada |
+
+### 6.10 Filtros de ruptura
+
+| Filtro | Descrição |
+|---|---|
+| em ruptura global do bimestre | Cliente sem compra entre 30 dias e 60 dias |
+| em ruptura global do trimestre | Cliente sem compra entre 61 dias e 90 dias |
+| em ruptura global do semestre | Clientes sem compra entre 91 dias e 180 dias |
+| em ruptura global do ano | Cliente sem compra entre 181 dias e 365 dias |
+| sem contato no ultimo agendamento | Cliente que na última vez que foi agendado mas não teve contato por nenhum vendedor do grupo |
+| com contato no ultimo agendamento para o vendedor | Cliente que na última vez que foi agendado teve contato pelo vendedor |
+| sem contato nos ultimos <<N>> agendamentos para a empresa | Cliente que nas últimas N vezes que foi agendado não teve contato por qualquer vendedor |
+
+<!-- p. 31 (PDF 35) -->
+
+```
+Opções para com\sem contato são: para o vendedor ou para a empresa.
+```
+
+### 6.11 Outros filtros úteis
+
+| Filtro | Descrição |
+|---|---|
+| positivado de hoje | O cliente foi positivado hoje («tempo» ou «tempo fixo») |
+| atendimento remoto em 5 dias | O cliente teve atendimento remoto no últimos 5 dias |
+| sem perfil com o vendedor | O cliente não está marcado para não agendar para o vendedor ou foi excluído ou consta como baixado na receita federal |
+| sem perfil com a empresa | O cliente não está marcado para não agendar para qualquer vendedor ou foi excluído ou consta como baixado na receita federal |
+| total de compras com o vendedor maior que <<N>> | Clientes com pelo menos N compras com o vendedor |
+| total de compras com a empresa menor que <<N>> ou indefinido | Clientes com no máximo N compras com a empresa ou o valor não foi calculado |
+| compras no mês com o vendedor maior que <<N>> | Clientes com pelo menos N compras com o vendedor no período expecificado («periodo») |
+| compras no semestre com a empresa menor que <<N>> ou indefinido | Clientes com no máximo N compras com a empresa ou o valor não foi calculado no período especificado |
+| queda de faturamento menor que <<N>>% | Clientes que tiveram queda no faturamento até N% |
+| queda de faturamento maior que <<N>>% | Clientes que tiveram queda no faturamento acima de N% |
+| cadastrado faz 90 dias | Clientes que foram cadastrados no ERP em no mínimo 90 dias («tempo») |
+| cadastrado a partir do dia '2026-02-10' | Clientes que foram cadastrados após um dia especificado |
+| elegivel | Clientes que não são excluídos, que estão ativos e que estão marcados para agendar |
+| elegivel incluindo roteirizavel | Clientes que não são excluídos, que estão ativos, que estão marcados para agendar e que estão marcados para roteirizar |
+| data da próxima visita do representante em 2 semanas | clientes cuja data de visita mapeada no ERP de um vendedor externo será somente daqui a 2 semanas («tempo» ou «tempo futuro») |
+| data da última visita do representante na semana anterior | clientes cuja data de visitas mapeada no ERP de um vendedor externo foi na semana passada |
+| data da rota no mês anterior | Clientes cuja data de rota compreendem somente o mês anterior |
+| data da rota futura em 5 dias a frente | Clientes cuja data de rota está somente após 5 dias a partir de hoje |
+| data da rota futura do vendedor nos próximos 2 dias | Clientes cuja data de rota está nos próximos 2 dias e esta rota está associado ao vendedor ao qual pertence o cliente |
+
+<!-- p. 33 (PDF 37) -->
+
+```
+O total de compras e o compras tem como opções: maior que, menor que, ou indefinido
+ou maior que <<N>> e menor que <<N>>
+```
+
+Podem ser utilizados o <<tempo>>, <<tempo fixo>> ou <<tempo futuro>> para definição do período de análise valorado, fixo ou futuro, respectivamente.
+
+```
+O <<periodo>> pode ser: mês, bimestre, trimestre, semestre e ano
+```
+
+#### 6.11.1 Opções para tempo
+
+O tempo é uma regra que referencia um período
+
+| Condicional |
+|---|
+| <<N>> anos |
+| <<N>> semestres |
+| <<N>> trimestres |
+| <<N>> bimestres |
+| <<N>> meses |
+| <<N>> semanas |
+| <<N>> dias |
+
+#### 6.11.2 Opções para tempo fixo
+
+O tempo fixo são períodos fixos de tempo já pré-definidos, sem a necessidade de um valor acompanhando.
+
+<!-- p. 34 (PDF 38) -->
+
+| Condicional |
+|---|
+| do dia |
+| na semana |
+| na quinzena |
+| no mês |
+| no bimestre |
+| no trimestre |
+| no semestre |
+| no ano |
+| de ontem |
+| na semana anterior |
+| na quinzena anterior |
+| no mês anterior |
+| no bimestre anterior |
+| no trimestre anterior |
+| no semestre anterior |
+| no ano anterior |
+
+### 6.12 Opções para condicionais de tempo
+
+| Condicional | Descrição |
+|---|---|
+| em <<N>> anos | dentro do intervalo de anos especificados |
+| em <<N>> semestres | dentro do intervalo dos semestres especificados |
+| em <<N>> trimestres | dentro do intervalo dos trimestres especificados |
+| em <<N>> bimestres | dentro do intervalo dos bimestres especificados |
+| em <<N>> meses | dentro do intervalo dos meses especificados |
+| em <<N>> semanas | dentro do intervalo dos semanas especificados |
+| em <<N>> dias | dentro do intervalo dos dias especificados |
+| em <<N>> horas | dentro do intervalo dos horas especificados |
+| em <<N>> minutos | dentro do intervalo dos minutos especificados |
+| há <<N>> anos atras | dentro do intervalo que é anterior aos anos especificados |
+| há <<N>> anos atras | dentro do intervalo que é anterior aos anos especificados |
+| há <<N>> semestres atras | dentro do intervalo que é anterior aos semestres especificados |
+| há <<N>> trimestres atras | dentro do intervalo que é anterior aos trimestres especificados |
+| há <<N>> bimestres atras | dentro do intervalo que é anterior aos bimestres especificados |
+| há <<N>> meses atras | dentro do intervalo que é anterior aos meses especificados |
+| há <<N>> semanas atras | dentro do intervalo que é anterior aos semanas especificados |
+| há <<N>> dias atras | dentro do intervalo que é anterior aos dias especificados |
+| na manhã | dentro do intervalo da parte da manhã |
+| na tarde | dentro do intervalo da parte da tarde |
+| na noite | dentro do intervalo da parte da noite |
+| no dia | no dia atual |
+| ontem | intervalo que compreende o dia de ontem |
+| na semana | intervalo que compreende a semana atual |
+| na quinzena | intervalo que compreende a quinzena atual |
+| no mês | intervalo que compreende o mês atual |
+| no bimestre | intervalo que compreende o bimestre atual |
+| no trimestre | intervalo que compreende o trimestre atual |
+| no semestre | intervalo que compreende o semestre atual |
+| no ano | intervalo que compreende o ano atual |
+| entre <<tempo>> e <<tempo>> | intervalo de tempo definido |
+| entre <<data>> e <<data>> | intervalo de data especificada |
+
+<!-- p. 36 (PDF 40) -->
+
+### 6.13 Opções para condicionais de tempo em tempo futuro ou intervalo no passado
+
+| Condicional | Descrição |
+|---|---|
+| nos proximos <<N>> anos | dentro do intervalo de agora e N anos |
+| nos proximos <<N>> semestres | dentro do intervalo de agora e N semestres |
+| nos proximos <<N>> trimestres | dentro do intervalo de agora e N trimestres |
+| nos proximos <<N>> bimestres | dentro do intervalo de agora e N bimestres |
+| nos proximos <<N>> meses | dentro do intervalo de agora e N meses |
+| nos proximos <<N>> semanas | dentro do intervalo de agora e N semanas |
+| nos proximos <<N>> dias | dentro do intervalo de agora e N dias |
+| nos proximos <<N>> horas | dentro do intervalo de agora e N horas |
+| nos proximos <<N>> minutos | dentro do intervalo de agora e N minutos |
+| em <<N>> anos a frente | dentro do período que começa após N anos a frente |
+| em <<N>> semestres a frente | dentro do período que começa após N semestres a frente |
+| em <<N>> trimestres a frente | dentro do período que começa após N trimestres a frente |
+| em <<N>> bimestres a frente | dentro do período que começa após N bimestres a frente |
+| em <<N>> meses a frente | dentro do período que começa após N meses a frente |
+| em <<N>> semanas a frente | dentro do período que começa após N semanas a frente |
+| em <<N>> dias a frente | dentro do período que começa após N dias a frente |
+| de ontem | dentro de um interfalo que compreende somente o dia de ontem |
+| na semana anterior | dentro de um intervalo que compreende somente a semana anterior |
+| na quinzena anterior | dentro de um intervalo que compreende somente a quinzena anterior |
+| no mês anterior | dentro de um intervalo que compreende somente a mês anterior |
+| no bimestre anterior | dentro de um intervalo que compreende somente a bimestre anterior |
+| no trimestre anterior | dentro de um intervalo que compreende somente a trimestre anterior |
+| no semestre anterior | dentro de um intervalo que compreende somente a semestre anterior |
+| no ano anterior | dentro de um intervalo que compreende somente a ano anterior |
+
+<!-- p. 37 (PDF 41) -->
+
+A «data» pode ser descrita das seguintes formas: ‘yyyy-mm-dd’ e ‘dd-mm-yyyy’.
+
+<!-- p. 38 (PDF 42) -->
+
+## 7 Regras para parâmetros das carteiras de clientes
+
+A parametrização define como cada cliente deve ser atendido: com qual frequência, em quais dias da semana, se deve ser incluído em rota presencial, etc. Sem regras de parametrização no GoBR, cada vendedor precisaria configurar manualmente cada um de seus clientes no Govendas — um trabalho inviável em carteiras grandes.
+
+Com o GoBR é possível criar regras de parametrização predefinidas, que são aplicadas automaticamente e podem ser sobrescritas pelos ajustes finos dos vendedores e supervisores quando necessário.
+
+Importante: a parametrização feita pelo GoBR não sobrepõe a parametrização realizada manualmente pelo usuário no Govendas. Ela se aplica apenas a clientes que ainda não possuem parametrização manual ou que foram parametrizados exclusivamente pelo GoBR em execuções anteriores.
+
+### 7.1 Estrutura de uma regra de parametrização
+
+Uma regra de parâmetros segue sempre este fluxo: 1.Definir a fonte de clientes — referencia uma carteira, segmentação ou time já definidos.
+
+2.Definir filtros temporais (opcional) — restringe o dia de aplicação da parametrização.
+
+3.Definir filtros de clientes (opcional) — filtra os clientes com base em condições comerciais.
+
+4.Definir os parâmetros de atendimento — frequência, preferência de dias, roteirização, fixação, etc.
+
+5.Definir regras de conflito (opcional) — evita que dois times atendam o mesmo cliente no mesmo dia.
+
+### 7.2 Valores de preferência de dia da semana
+
+A preferência de dias da semana é um valor numérico atribuído a cada dia, onde:
+
+| Valor | Significado |
+|---|---|
+| 0 | Não deve visitar neste dia |
+| 1 | Menor preferência (pode visitar, mas é prioridade baixa) |
+| 2 | Preferência normal |
+| 3 | Maior preferência (dia prioritário para a visita) |
+
+<!-- p. 39 (PDF 43) -->
+
+### 7.3 Exemplos de uso
+
+#### 7.3.1 Exemplo 1 — Parametrização semanal básica
+
+```
+version 1.0
+
+time "time alberto":
+    vendedores todostelevendas ativados
+
+carteira "carteira fixa":
+    clientes carteirafixa("time alberto")
+
+parametros "semanal para o alberto":
+    da carteira("carteira fixa")
+    quando inatividade de 90 dias
+    frequencia semanal()
+```
+
+Todos os clientes inativos há 90 dias na carteira fixa dos televendas ativados recebem uma parametrização de frequência semanal (7 dias). Os dias da semana recebem o valor padrão: 1 de segunda a sexta, 0 no sábado e domingo.
+
+#### 7.3.2 Exemplo 2 — Parametrizando preferência de dia da semana
+
+```
+parametros "mensal alberto com preferencia":
+    da carteira("carteira fixa")
+    quando inatividade de 90 dias
+    frequencia mensal()
+    preferencia na segunda e na terça
+```
+
+Clientes inativos há 90+ dias recebem frequência mensal (30 dias) e preferência de visita com valor 2 na segunda e na terça. Os demais dias ficam com valor 0.
+
+<!-- p. 40 (PDF 44) -->
+
+#### 7.3.3 Exemplo 3 — Preferência com intensidades diferentes por dia
+
+```
+parametros "mensal alberto com intensidades":
+    da carteira("carteira fixa")
+    quando inatividade de 90 dias
+    frequencia mensal()
+    preferencia
+         maior na segunda e
+         menor na terça e
+         normal na quinta e
+         na sexta-feira e
+         menor no sábado
+```
+
+Resultado: segunda = 3, quinta e sexta = 2, terça e sábado = 1, quarta e domingo = 0.
+
+Os modificadores de intensidade são: - maior fi valor 3 - normal (ou ausência de modificador)
+
+fi valor 2 - menor fi valor 1
+
+#### 7.3.4 Exemplo 4 — Remoção de agendamento
+
+```
+parametros "remover inativos da agenda":
+    da carteira("carteira fixa")
+    quando inatividade de 90 dias
+    nao agendar
+```
+
+Os clientes inativos há 90+ dias são marcados para não aparecerem na agenda.
+
+Atenção: a remoção de agendamento é uma parametrização exclusiva — não é possível definir frequência ou preferência de dias na mesma regra que usa nao agendar.
+
+#### 7.3.5 Exemplo 5 — Parâmetros dinâmicos (aproveitando configurações do usuário)
+
+Muitas vezes não se quer sobrescrever o parâmetro do vendedor, apenas complementá-lo:
+
+```
+parametros "frequencia do vendedor + preferencia nos uteis":
+    da carteira("carteira fixa")
+    quando inatividade de 90 dias
+    frequencia do vendedor
+    preferência nos dias úteis
+```
+
+<!-- p. 41 (PDF 45) -->
+
+• frequencia do vendedor fi usa a frequência configurada pelo próprio vendedor no Govendas para cada cliente. Se o vendedor não configurou, usa o padrão de 7 dias.
+
+• preferência nos dias úteis fi define preferência 2 de segunda a sexta, independente do que o vendedor configurou.
+
+#### 7.3.6 Exemplo 6 — Cascata de fallbacks para frequência
+
+```
+parametros "frequencia com fallback":
+    da carteira("carteira fixa")
+    quando inatividade de 90 dias
+    frequencia do vendedor ou de qualquer vendedor ou de 35 dias
+    preferência do historico ou remover
+```
+
+```
+• frequencia do vendedor ou de qualquer vendedor ou de 35 dias: usa a
+```
+
+frequência do vendedor específico. Se não tiver, usa a frequência configurada por qualquer outro vendedor para aquele cliente. Se nenhum vendedor configurou, aplica 35 dias.
+
+• preferência do historico ou remover: calcula a preferência de dia com base no histórico de visitas. Se não houver histórico suficiente, não parametriza (remove a configuração desse parâmetro).
+
+#### 7.3.7 Exemplo 7 — Parametrização com restrição temporal
+
+```
+parametros "semanal dias uteis":
+    da carteira("carteira fixa")
+    nos dias úteis
+    quando inatividade de 90 dias
+    frequencia semanal()
+    preferencia na segunda e na terça
+```
+
+O filtro nos dias úteis garante que essa parametrização só será aplicada quando a regra executar em dias úteis. Se executar em sábado ou domingo, a parametrização é ignorada para esta passagem.
+
+<!-- p. 42 (PDF 46) -->
+
+#### 7.3.8 Exemplo 8 — Evitando conflitos entre televendas e campo
+
+```
+parametros "televendas sem choque com campo":
+    da carteira("carteira televendas")
+    quando inatividade de 90 dias
+    frequencia do vendedor ou de qualquer vendedor ou de 35 dias
+    preferência do historico ou nos dias uteis
+    sem choque na carteira("carteira campo")
+```
+
+A cláusula sem choque na carteira("carteira campo") garante que a preferência de dias dos televendas não coincida com a dos vendedores de campo para os mesmos clientes. Isso evita que o cliente receba ligação e visita presencial no mesmo dia.
+
+É possível refinar o controle de choque com filtros adicionais:
+
+```
+sem choque na rota e na pasta do time("time maria")
+```
+
+• na rota fi considera apenas clientes roteirizáveis do time da Maria.
+
+• fora da rota fi considera apenas clientes não roteirizáveis.
+
+• na pasta fi considera apenas os clientes dentro da mesma pasta dos vendedores.
+
+#### 7.3.9 Exemplo 9 — Configuração de semana pivot
+
+A semana pivot restringe a partir de qual semana do mês o cliente pode aparecer na agenda:
+
+```
+parametros "pivot segunda semana":
+    da carteira("carteira televendas")
+    quando inatividade de 90 dias
+    frequencia do vendedor ou de 35 dias
+    restrito a partir da segunda semana
+    preferência do historico ou nos dias uteis
+```
+
+Com restrito a partir da segunda semana, o cliente só poderá aparecer na agenda a partir da segunda segunda-feira do mês.
+
+<!-- p. 43 (PDF 47) -->
+
+#### 7.3.10 Exemplo 10 — Configuração de roteirização e parâmetros fixos
+
+```
+parametros "campo roteirizavel fixo":
+    da carteira("carteira campo")
+    quando inatividade de 90 dias
+    frequencia do vendedor ou de 35 dias
+    preferência do historico ou nos dias uteis
+    roteirizavel
+    fixo
+```
+
+• roteirizavel fi o cliente é incluído na otimização de rota de visita presencial.
+
+• fixo fi a parametrização é marcada como fixa, criando uma restrição mais rígida no uso de frequência e preferência pelo gerador de agendas.
+
+Padrão: se nenhuma dessas opções for especificada, o cliente é não roteirizavel e não fixo.
+
+#### 7.3.11 Exemplo 11 — Limpando parametrizações existentes
+
+```
+limpar parametros "remover parametrizacao":
+    da carteira("carteira fixa")
+```
+
+Remove as parametrizações dinâmicas já aplicadas pelo GoBR para os clientes da carteira. Útil para resetar configurações antes de reaplicar regras atualizadas.
+
+### 7.4 Conjunto de regras para frequência
+
+#### 7.4.1 Frequência fixa por período
+
+| Regra | Frequência equivalente |
+|---|---|
+| diaria() | 1 dia |
+| semanal() | 7 dias |
+| quinzenal() | 15 dias |
+| quinzenal('dd-mm-yyyy') | 15 dias a partir da data pivot |
+| mensal() | 30 dias |
+| bimestral() | 60 dias |
+| bimestral('dd-mm-yyyy') | 60 dias a partir da data pivot |
+| trimestral() | 90 dias |
+| semestral() | 180 dias |
+| anual() | 365 dias |
+| de <<N>> dias | N dias exatos |
+
+<!-- p. 44 (PDF 48) -->
+
+#### 7.4.2 Modificadores de limite para frequência fixa
+
+| Modificador | Descrição |
+|---|---|
+| no máximo semanal() | A frequência não pode ser maior que 7 dias |
+| no mínimo mensal() | A frequência não pode ser menor que 30 dias |
+
+#### 7.4.3 Frequência dinâmica (baseada em dados existentes)
+
+| Regra | Descrição |
+|---|---|
+| do govendas | Usa a frequência padrão do Govendas |
+| do vendedor | Usa a frequência configurada pelo vendedor para o cliente |
+| do vendedor menos <<N>> dias | Frequência do vendedor decrementada de N dias |
+| do vendedor mais <<N>> dias | Frequência do vendedor acrescida de N dias |
+| do historico | Calcula a frequência com base no histórico de visitas |
+| de qualquer vendedor | Usa a frequência configurada por qualquer vendedor para aquele cliente |
+| de ativos da empresa | Usa a frequência média dos clientes ativos da empresa |
+| de inativos da empresa | Usa a frequência média dos clientes inativos da empresa |
+| de ativos do vendedor | Usa a frequência média dos clientes ativos do vendedor |
+| de inativos do vendedor | Usa a frequência média dos clientes inativos do vendedor |
+| remover | Remove a configuração de frequência existente |
+
+<!-- p. 45 (PDF 49) -->
+
+### 7.5 Conjunto de regras para restrição de semana (restrito)
+
+| Regra | Descrição |
+|---|---|
+| a partir da primeira semana | Desde a primeira semana do mês |
+| a partir da segunda semana | A partir da segunda semana |
+| a partir da terceira semana | A partir da terceira semana |
+| a partir da quarta semana | A partir da quarta semana |
+| ate a primeira semana | Somente na primeira semana |
+| ate a segunda semana | Até a segunda semana |
+| ate a terceira semana | Até a terceira semana |
+| ate a quarta semana | Até a quarta semana |
+
+### 7.6 Cláusulas e restrições para parâmetros
+
+• Regras incrementais: as regras de parâmetros criam ou atualizam configurações, nunca as excluem diretamente (exceto limpar parametros).
+
+<!-- p. 46 (PDF 50) -->
+
+• Sem repetição: clientes parametrizados em uma regra anterior não são reprocessados por regras subsequentes. A ordem importa.
+
+• Referências únicas: os nomes dos blocos de parâmetros devem ser distintos.
+
+• Evitar regras demais: parametrizações devem ser feitas para times ou carteiras inteiras, não para vendedores individuais.
+
+<!-- p. 47 (PDF 51) -->
+
+## 8 Regras para alertas de clientes
+
+Os alertas permitem criar um canal de comunicação ativo com os usuários do Govendas, notificando-os sobre eventos relevantes nos clientes de suas carteiras. Eles fazem parte da iniciativa do Supervisor Digital e têm como objetivo impulsionar vendedores e gestores a tomar ações baseadas em dados.
+
+Um alerta é acionado quando uma condição específica (o gatilho) é detectada para um ou mais clientes, dentro de um determinado período de tempo.
+
+Importante: não é possível combinar regras de parametrização e alertas no mesmo conjunto de regras. A temporalidade de aplicação das parametrizações é naturalmente diferente da temporalidade de detecção dos eventos.
+
+### 8.1 Estrutura de uma regra de alerta
+
+Uma regra de alerta segue as seguintes etapas:
+
+1.Definir os clientes — referencia carteiras ou times.
+
+2.Definir filtros temporais — controla quando o alerta pode ser emitido.
+
+3.Definir filtros de clientes (opcional) — restringe o conjunto de clientes monitorados.
+
+4.Definir o gatilho — condição que aciona o alerta (com onde).
+
+5.Definir informações adicionais — dados que acompanham o alerta (com informe).
+
+6.Definir a descrição (opcional) — texto explicativo do alerta, com suporte a variáveis.
+
+7.Definir o alvo — quem recebe o alerta (vendedor, supervisor ou gestor).
+
+8.Definir canais de entrega — Govendas app e/ou WhatsApp.
+
+9.Definir tags (opcional) — marcações para classificar o alerta.
+
+<!-- p. 48 (PDF 52) -->
+
+### 8.2 Exemplo completo de alerta
+
+```
+version 1.0
+
+time "campo e televendas":
+    vendedores todos
+
+alerta "Whatsapp: Ruptura de positivação na agenda de hoje":
+    do time("campo e televendas")
+    nos dias uteis e de hora em hora a partir de '07:00'
+    quando ativos para o vendedor
+           e adimplentes
+           e na agenda de hoje
+           e recencia de visita entre 10 dias e 90 dias
+    onde nao tem venda em 21 dias
+    informe com 15 vendedores e com 5 clientes
+           e com o nome do supervisor
+           e com o codigo do vendedor
+           e com o nome do vendedor
+           e com o codigo do cliente
+           e com o nome do cliente
+    descreva com o texto("
+Há clientes em ruptura de positivacao de 21 dias.
+Analisado em $datahora$.
+    ")
+    entregue para gestor e redirecione("vagner@govendas.com")
+   pelos canais govendas() e whatsapp("ruptura_vendedor_template1")
+    e template com os valores(
+           '$totalclientes$',
+           '10',
+           '21',
+           '$nomeusuario$',
+           'https://app.govendas.com/#/notificacao/{{id}}'
+    )
+```
+
+Análise linha a linha: - do time(...) fi analisa clientes de todos os vendedores. - nos dias
+
+```
+uteis e de hora em hora a partir de '07:00' fi a cada hora, somente em dias úteis,
+após as 7h. - quando ... e na agenda de hoje e recencia de visita entre 10 dias
+```
+
+e 90 dias fi filtra apenas clientes ativos, adimplentes, que estão na agenda de hoje e tiveram visita nos últimos 10 a 90 dias. - onde nao tem venda em 21 dias fi o gatilho: dispara o alerta se o cliente não teve venda nos últimos 21 dias. - informe com 15 vendedores e com 5 clientes e ... fi o alerta agrupa até 15 vendedores e exibe até 5 clientes por vendedor, com
+
+<!-- p. 49 (PDF 53) -->
+
+os atributos especificados. - descreva com o texto(...) fi mensagem textual do alerta, com
+
+variável $datahora$. - entregue para gestor fi o alerta é enviado para o perfil de gestor.
+
+```
+- pelos canais govendas() e whatsapp(...) fi entregue tanto no app Govendas quanto
+```
+
+via WhatsApp com template específico.
+
+### 8.3 Tipos de evento (informe)
+
+O tipo de evento define como as informações são agrupadas e exibidas:
+
+| Tipo | Regra | Descrição |
+|---|---|---|
+| CUSTOM_TABLE | informe | Tabela customizável com atributos definidos manualmente |
+| CLIENT | informe da carteira | Evento por cliente, com atributos do vendedor adicionados automaticamente |
+| ITINER | informe da agenda | Evento por item de agenda, com atributos do vendedor adicionados automaticamente |
+| SUMMARIZED_SALESMAN | informe resumo do supervisor | Resumo agrupado por supervisor (atributos fixos) |
+| SUMMARIZED_SUPERVISOR | informe resumo do gestor | Resumo agrupado por gestor (atributos fixos) |
+
+### 8.4 Gatilhos disponíveis (onde)
+
+#### 8.4.1 Gatilhos de visita e venda
+
+| Gatilho | Descrição |
+|---|---|
+| tem venda em <<N>> dias | O cliente teve venda nos últimos N dias |
+| não tem venda em <<N>> dias | O cliente não teve venda nos últimos N dias |
+| tem visita em <<N>> dias | O cliente teve visita nos últimos N dias |
+| não tem visita em <<N>> dias | O cliente não teve visita nos últimos N dias |
+| tem venda do vendedor em <<N>> dias | O cliente teve venda com o vendedor específico |
+| não tem venda do vendedor em <<N>> dias | O cliente não teve venda com o vendedor específico |
+| tem visita da empresa em <<N>> dias | O cliente teve visita de qualquer vendedor da empresa |
+| não tem visita da empresa em <<N>> dias | O cliente não teve visita de nenhum vendedor da empresa |
+
+<!-- p. 50 (PDF 54) -->
+
+#### 8.4.2 Gatilhos de frequência e parametrização
+
+| Gatilho | Descrição |
+|---|---|
+| fora da frequencia de venda ou maior que <<N>> dias | O cliente está fora da frequência de venda parametrizada |
+| fora da frequencia de venda indicada ou maior que <<N>> dias | Considera a frequência indicada pelo histórico |
+| atendimento <<N>>% menor que o parametrizado | Volume de atendimentos abaixo do esperado |
+| não tem parametro | O cliente não tem nenhum parâmetro configurado |
+| não tem parametro manual | O cliente não tem parametrização manual |
+| parametro de frequencia <<N>>% menor que o previsto | Frequência parametrizada abaixo da prevista |
+
+<!-- p. 51 (PDF 55) -->
+
+#### 8.4.3 Gatilhos de qualidade de atendimento
+
+| Gatilho | Descrição |
+|---|---|
+| tem <<N>>% de visita remota em <<periodo>> | Percentual de visitas remotas no período |
+| tem <<N>>% de visita incerta em <<periodo>> | Percentual de visitas com localização incerta |
+| ultima positivacao <<N>>% menor que o ticket medio | Última venda abaixo do ticket médio |
+| não tem coordenada confiavel | Sem geolocalização válida |
+
+#### 8.4.4 Gatilhos de produtos
+
+| Gatilho | Descrição |
+|---|---|
+| tem produtos com promoções sugeridas | Há produtos com promoção sugerida para o cliente |
+| tem produtos sugeridos | Há produtos sugeridos para o cliente |
+
+### 8.5 Variáveis disponíveis para textos e templates
+
+```
+As variáveis são usadas nas seções descreva com o texto(...) e template com os
+```
+
+valores(...), sempre envoltas por $:
+
+#### 8.5.1 Variáveis fixas
+
+| Variável | Descrição |
+|---|---|
+| $data$ | Data atual |
+| $hora$ | Hora atual |
+| $datahora$ | Data e hora atual |
+
+<!-- p. 52 (PDF 56) -->
+
+#### 8.5.2 Variáveis do usuário alvo do evento
+
+| Variável | Descrição |
+|---|---|
+| $nomeusuario$ | Nome completo do usuário que recebe o alerta |
+| $primeironomeusuario$ | Primeiro nome do usuário |
+| $emailusuario$ | E-mail do usuário |
+| $telefoneusuario$ | Telefone do usuário |
+| $tipousuario$ | Tipo de usuário (vendedor, supervisor, gestor) |
+| $diasparainativos$ | Dias configurados para considerar um cliente inativo |
+| $maximovisitas$ | Máximo de visitas configurado |
+| $idvendedor$ | ID do vendedor |
+| $tipovendedor$ | Tipo do vendedor (campo, televendas) |
+| $semagenda$ | Se o usuário está sem agenda |
+
+#### 8.5.3 Variáveis dos clientes do evento
+
+| Variável | Descrição |
+|---|---|
+| $totalclientes$ | Total de clientes no evento |
+| $totalagendados$ | Total de clientes agendados |
+| $totalvendedores$ | Total de vendedores no evento |
+| $somaticketmedio$ | Soma dos tickets médios dos clientes |
+| $idusuario$ | ID do usuário |
+
+<!-- p. 53 (PDF 57) -->
+
+#### 8.5.4 Variáveis de produtos
+
+| Variável | Descrição |
+|---|---|
+| $totalprodutos$ | Total de produtos no evento |
+| $totalcondicoes$ | Total de condições de produtos |
+| $qtddeclientes$ | Quantidade de clientes nos produtos |
+
+### 8.6 Canais de entrega
+
+| Canal | Sintaxe | Descrição |
+|---|---|---|
+| Govendas App | govendas() | Notificação interna no aplicativo Govendas |
+| WhatsApp | whatsapp("nome_do_template") | Mensagem via WhatsApp usando um template pré-aprovado |
+
+Para WhatsApp, os valores das variáveis do template são passados com: e template
+
+```
+com os valores( '$totalclientes$', '10', '$nomeusuario$', 'https://
+app.govendas.com/#/...' )
+```
+
+### 8.7 Alvos do alerta (entregue)
+
+| Alvo | Descrição |
+|---|---|
+| para o vendedor | O alerta é entregue ao vendedor da carteira |
+| para o supervisor | O alerta é entregue ao supervisor dos vendedores |
+| para o gestor | O alerta é entregue ao gestor |
+
+<!-- p. 54 (PDF 58) -->
+
+É possível também redirecionar o alerta para um e-mail específico com e
+
+```
+redirecione("email@exemplo.com").
+```
+
+Obs.: para que os nomes de supervisores e vendedores apareçam nos alertas, eles precisam estar cadastrados no Govendas.
+
+### 8.8 Cláusulas e restrições para alertas
+
+• Regras por time ou carteira: um alerta nunca é criado diretamente para um vendedor individual.
+
+• O gatilho define a prioridade: os clientes são ordenados pela temporalidade do gatilho.
+
+• Eventos não-exclusivos: um mesmo cliente pode acionar múltiplos alertas diferentes, independentemente.
+
+• A ordem não importa: diferente das carteiras, a ordem dos alertas não afeta o resultado.
+
+• Referências únicas: os nomes dos alertas devem ser distintos, inclusive entre conjuntos de regras diferentes da mesma empresa.
+
+<!-- p. 55 (PDF 59) -->
+
+## 9 Regras para tags de clientes
+
+As tags permitem fazer marcações nos clientes de forma a facilitar filtros, segmentações e análises dentro do Govendas 2.0. Existem dois tipos de tags:
+
+• Tag de contexto: define uma marcação baseada em uma condição (gatilho) sobre os clientes.
+
+• Tag nomeada: define uma marcação baseada em uma tag de contexto já criada, podendo ser descrita com um texto.
+
+Atenção: a funcionalidade de tags está em expansão contínua. Os gatilhos disponíveis para tags são distintos dos gatilhos de alertas.
+
+### 9.1 Gatilhos disponíveis para tags de contexto
+
+| Gatilho | Descrição |
+|---|---|
+| tem produtos e <filtro de produtos> | O cliente tem produtos que atendem ao filtro especificado |
+| tem produtos sugeridos e <filtro de sugestão> | O cliente tem sugestões de produtos |
+| tem fornecedores e <filtro> | O cliente tem fornecedores que atendem ao filtro |
+| tem fornecedores sugeridos e <filtro> | O cliente tem sugestões de fornecedores |
+| tem rotas | O cliente pertence a alguma rota |
+| tem cidades | O cliente está em alguma cidade cadastrada |
+| tem estados | O cliente pertence a algum estado |
+| tem ramo de atividade | O cliente tem ramo de atividade definido |
+| tem classificacao | O cliente tem classificação definida |
+| tem plano de pagamento | O cliente tem plano de pagamento |
+| tem plano de cobrança | O cliente tem plano de cobrança |
+| tem feedbacks e <filtro de feedback> | O cliente tem feedbacks de atendimento no período |
+
+<!-- p. 56 (PDF 60) -->
+
+#### 9.1.1 Filtros de produtos para tags
+
+| Filtro | Descrição |
+|---|---|
+| recencia de venda entre <<N>> dias e <<M>> dias | Produtos com venda recente no intervalo |
+| não tem venda em <<N>> dias | Produtos sem venda há N dias |
+| em ruptura | Sugestões de produto do tipo ruptura |
+| no momento certo | Sugestões do tipo “momento certo” |
+| mais vendidos | Sugestões dos produtos mais vendidos |
+| primeira compra | Sugestões para primeira compra |
+| skus não vendidos | SKUs que o cliente ainda não comprou |
+| prioritarios | Produtos prioritários |
+| todas as sugestões | Todos os tipos de sugestão |
+
+#### 9.1.2 Filtros de feedbacks para tags
+
+| Filtro | Descrição |
+|---|---|
+| no ultimo atendimento | No atendimento mais recente |
+| nos ultimos <<N>> atendimentos | Nos N atendimentos mais recentes |
+| aparece <<N>> vezes nos ultimos <<M>> atendimentos | Aparece N vezes nos últimos M atendimentos |
+
+<!-- p. 57 (PDF 61) -->
+
+## 10 Gramática da Linguagem gorules (versão 1.0)
+
+A gramática formal define a estrutura sintática completa da linguagem gorules. Ela é implementada como uma gramática ANTLR e é o que o processador do GoBR usa para interpretar os conjuntos de regras.
+
+Estrutura de alto nível:
+
+```
+gorules:
+    version
+    (
+        regrapadrao |
+        times segmentacoes
+        (
+            carteiras |
+            parametros |
+            carteiras parametros |
+            alertas |
+            carteiras alertas |
+            tags |
+            carteiras tags
+        )
+    )
+    end
+```
+
+Isso significa que um arquivo gorules válido deve sempre começar com version 1.0, definir pelo menos um time, e então conter uma das combinações: somente carteiras, somente parâmetros, carteiras com parâmetros, somente alertas, carteiras com alertas, somente tags, ou carteiras com tags.
+
+Tipos básicos da linguagem:
+
+| Tipo | Formato | Exemplos |
+|---|---|---|
+| String | "texto entre aspas duplas" | "supervisor marcos" |
+| Inteiro | Sequência de dígitos | 90, 30 |
+| Real | Dígitos com . ou , | 3.5, 100,00 |
+| Hora | 'hh:mm' | '07:00', '18:30' |
+| Data DMY | 'dd-mm-yyyy' | '01-01-2025' |
+| Data YMD | 'yyyy-mm-dd' | '2025-01-01' |
+| Tag | @nometag | @ruptura, @inativo |
+| Variável | Identificador | frequenciaBase |
+
+<!-- p. 58 (PDF 62) -->
+
+Regras lexicais importantes: - Comentários são introduzidos por # e se estendem até o final da linha. - A linguagem suporta caracteres acentuados do português ( á, ã, ç, é, etc.). - Strings aceitam letras, números, espaços e símbolos especiais (exceto "). - Nomes de variáveis começam com letra e podem conter letras e números. - Tags de clientes começam com @ e usam apenas letras minúsculas e números.

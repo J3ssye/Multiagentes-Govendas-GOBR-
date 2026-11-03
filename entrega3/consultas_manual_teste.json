@@ -1,0 +1,529 @@
+{
+  "_sobre": {
+    "papel": "TESTE: só relata. Não é usado para decidir estratégia de chunking, configuração de busca nem qualquer parâmetro.",
+    "escrita": "20 consultas, uma por folha sorteada, escritas em 02/11/2026 a partir do texto extraído (saida/manual_blocos.jsonl) da folha de origem, antes de existir índice ou qualquer busca no manual.",
+    "sorteio": {
+      "regra": "população = folhas com conteúdo além do título, menos todas as folhas de algum gabarito do dev (conjuntos_manual.populacao_teste); sorteio = random.Random(semente).sample(população, n), em ordem de documento",
+      "semente": 20261102,
+      "n": 20,
+      "tamanho_populacao": 62,
+      "populacao": [
+        "1.0",
+        "1.1",
+        "1.2",
+        "1.3",
+        "2.0",
+        "2.1",
+        "3.0",
+        "3.2",
+        "3.3",
+        "3.5",
+        "4.1",
+        "4.1.1",
+        "4.1.2",
+        "4.3.1",
+        "4.3.2",
+        "4.3.3",
+        "4.6",
+        "5.0",
+        "5.2",
+        "5.4",
+        "5.5",
+        "5.6",
+        "6.0",
+        "6.1",
+        "6.4",
+        "6.5",
+        "6.6",
+        "6.7",
+        "6.8",
+        "6.9",
+        "6.10",
+        "6.11",
+        "6.11.2",
+        "7.0",
+        "7.1",
+        "7.2",
+        "7.3.1",
+        "7.3.2",
+        "7.3.3",
+        "7.3.5",
+        "7.3.6",
+        "7.3.7",
+        "7.3.11",
+        "7.4.2",
+        "7.5",
+        "7.6",
+        "8.0",
+        "8.1",
+        "8.3",
+        "8.4.1",
+        "8.4.2",
+        "8.4.3",
+        "8.4.4",
+        "8.5",
+        "8.5.2",
+        "8.5.3",
+        "8.5.4",
+        "8.7",
+        "8.8",
+        "9.1",
+        "9.1.1",
+        "9.1.2"
+      ],
+      "sorteadas": [
+        "1.2",
+        "2.0",
+        "3.2",
+        "4.1",
+        "4.1.1",
+        "4.1.2",
+        "6.4",
+        "6.5",
+        "6.6",
+        "6.9",
+        "7.0",
+        "7.3.1",
+        "7.3.3",
+        "7.3.5",
+        "7.3.6",
+        "7.3.7",
+        "8.3",
+        "8.4.1",
+        "8.4.2",
+        "8.7"
+      ]
+    },
+    "gabarito": "Mesma definição do dev: lista de folhas. Critério 'chave': folhas cujo texto contém todas as construções-chave da resposta (busca exata no texto extraído). Critério 'manual': folhas decididas na leitura, com justificativa (2 consultas: 4.1 e 7.3.3). Nenhuma folha de gabarito do teste está em gabarito do dev (regra do validador). Em 3 folhas (3.2, 7.3.6, 8.7) a construção natural também aparecia numa folha do dev (4.3.4, 7.3.8, 8.2); a consulta foi redirecionada para outro aspecto da mesma folha, antes de qualquer busca.",
+    "acerto": "Um chunk acerta se a sua folha principal está no gabarito (estratégia C: a folha do nó; estratégia B: a folha com mais caracteres dentro do chunk).",
+    "paginas": "Páginas impressas do manual; página do PDF = impressa + 4.",
+    "limitacao": "Consultas escritas pela mesma autoria do índice, depois de ler a folha sorteada. A paráfrase reduz, mas não elimina, a repetição de termos do domínio (agenda, frequência, supervisor, segmentação), o que favorece a busca por palavras (BM25). A regra de independência deixa fora do gabarito folhas do dev que tocam no mesmo assunto (ex.: 4.3.4 para a consulta de 3.2; 4.5 para a de 4.1.2): se a busca devolver uma delas, conta como erro. O gabarito por chave é lexical: folha que responde por paráfrase, sem conter a construção, não entra. Folhas pequenas sorteadas (4.1 com 118 caracteres, 6.9 com 197) foram mantidas; a população não tem tamanho mínimo."
+  },
+  "consultas": [
+    {
+      "id": "mteste_01",
+      "consulta": "Preciso saber programar para escrever essas regras, ou dá para descrevê-las do jeito que o pessoal comercial fala?",
+      "tipo": "conceito",
+      "folha_origem": "1.2",
+      "criterio": "chave",
+      "chave": [
+        "sem necessidade de programação"
+      ],
+      "gabarito": [
+        "1.2"
+      ],
+      "paginas_impressas": {
+        "1.2": [
+          1,
+          1
+        ]
+      },
+      "evidencia": "Porque permite descrever as regras em uma linguagem próxima do discurso comercial do distribuidor, sem necessidade de programação."
+    },
+    {
+      "id": "mteste_02",
+      "consulta": "Que tipo de linguagem é essa usada nas regras? É uma linguagem de programação de uso geral?",
+      "tipo": "conceito",
+      "folha_origem": "2.0",
+      "criterio": "chave",
+      "chave": [
+        "domínio específico"
+      ],
+      "gabarito": [
+        "2.0"
+      ],
+      "paginas_impressas": {
+        "2.0": [
+          3,
+          3
+        ]
+      },
+      "evidencia": "A linguagem gorules é uma linguagem de domínio específico (DSL — Domain Specific Language)"
+    },
+    {
+      "id": "mteste_03",
+      "consulta": "É comum ter mais de uma equipe de vendedores no mesmo arquivo de regras, ou o normal é um arquivo para cada equipe?",
+      "tipo": "conceito",
+      "folha_origem": "3.2",
+      "criterio": "chave",
+      "chave": [
+        "vários times",
+        "muito comum definir"
+      ],
+      "gabarito": [
+        "3.2"
+      ],
+      "paginas_impressas": {
+        "3.2": [
+          5,
+          6
+        ]
+      },
+      "evidencia": "É possível e muito comum definir vários times em um mesmo conjunto de regras:"
+    },
+    {
+      "id": "mteste_04",
+      "consulta": "Depois de montar as equipes de vendedores, como eu ligo os clientes a elas? Quais são as opções?",
+      "tipo": "conceito",
+      "folha_origem": "4.1",
+      "criterio": "manual",
+      "chave": null,
+      "gabarito": [
+        "4.1",
+        "4.1.1",
+        "4.1.2"
+      ],
+      "paginas_impressas": {
+        "4.1": [
+          8,
+          8
+        ],
+        "4.1.1": [
+          8,
+          8
+        ],
+        "4.1.2": [
+          8,
+          8
+        ]
+      },
+      "evidencia": "Após definir os times, o próximo passo é associar grupos de clientes a esses times.",
+      "justificativa": "A folha 4.1 só anuncia que existem dois mecanismos; eles são descritos em 4.1.1 (carteira) e 4.1.2 (segmentação)."
+    },
+    {
+      "id": "mteste_05",
+      "consulta": "O GOBR monta a agenda do vendedor sozinho ou só prepara a lista de clientes que outro módulo usa para agendar?",
+      "tipo": "conceito",
+      "folha_origem": "4.1.1",
+      "criterio": "chave",
+      "chave": [
+        "não exclui clientes nem monta agendas"
+      ],
+      "gabarito": [
+        "4.1.1"
+      ],
+      "paginas_impressas": {
+        "4.1.1": [
+          8,
+          8
+        ]
+      },
+      "evidencia": "O GoBR não exclui clientes nem monta agendas diretamente — ele apenas constrói as carteiras, que são então consumidas pelo gerador de agendas."
+    },
+    {
+      "id": "mteste_06",
+      "consulta": "Quero agrupar alguns clientes só para aplicar parâmetros e etiquetas, sem que eles entrem na agenda. Que recurso eu uso?",
+      "tipo": "conceito",
+      "folha_origem": "4.1.2",
+      "criterio": "chave",
+      "chave": [
+        "agrupamento auxiliar"
+      ],
+      "gabarito": [
+        "4.1.2"
+      ],
+      "paginas_impressas": {
+        "4.1.2": [
+          8,
+          8
+        ]
+      },
+      "evidencia": "Use segmentacao quando precisa de um grupo de clientes para regras auxiliares sem gerar agenda."
+    },
+    {
+      "id": "mteste_07",
+      "consulta": "Como pego só os clientes que já estão agendados hoje para qualquer vendedor, não importa qual?",
+      "tipo": "opcoes",
+      "folha_origem": "6.4",
+      "criterio": "chave",
+      "chave": [
+        "na agenda global de hoje"
+      ],
+      "gabarito": [
+        "6.4"
+      ],
+      "paginas_impressas": {
+        "6.4": [
+          25,
+          26
+        ]
+      },
+      "evidencia": "na agenda global de hoje | O cliente está na agenda de qualquer vendedor hoje"
+    },
+    {
+      "id": "mteste_08",
+      "consulta": "Tem como deixar de fora os clientes cujo CNPJ está baixado ou inapto no cadastro do governo?",
+      "tipo": "opcoes",
+      "folha_origem": "6.5",
+      "criterio": "chave",
+      "chave": [
+        "status na receita federal"
+      ],
+      "gabarito": [
+        "6.5"
+      ],
+      "paginas_impressas": {
+        "6.5": [
+          26,
+          28
+        ]
+      },
+      "evidencia": "status na receita federal definido como inapta | Empresa inapta"
+    },
+    {
+      "id": "mteste_09",
+      "consulta": "Consigo selecionar clientes pela forma de pagamento ou pelo jeito de cobrança cadastrado?",
+      "tipo": "opcoes",
+      "folha_origem": "6.6",
+      "criterio": "chave",
+      "chave": [
+        "tipo de pagamento",
+        "tipo de cobranca"
+      ],
+      "gabarito": [
+        "6.6"
+      ],
+      "paginas_impressas": {
+        "6.6": [
+          28,
+          28
+        ]
+      },
+      "evidencia": "tipo de pagamento igual(...) | Filtra por id de pagamento igual a um dos valores"
+    },
+    {
+      "id": "mteste_10",
+      "consulta": "Como excluo da regra os clientes que fazem parte de um grupo auxiliar que eu já tinha criado?",
+      "tipo": "sintaxe",
+      "folha_origem": "6.9",
+      "criterio": "chave",
+      "chave": [
+        "não contido na segmentacao"
+      ],
+      "gabarito": [
+        "6.9"
+      ],
+      "paginas_impressas": {
+        "6.9": [
+          30,
+          30
+        ]
+      },
+      "evidencia": "não contido na segmentacao(\"nome\") | O cliente não pertence à segmentação especificada"
+    },
+    {
+      "id": "mteste_11",
+      "consulta": "Se o vendedor já ajustou na mão como atende um cliente, a regra automática passa por cima disso?",
+      "tipo": "conceito",
+      "folha_origem": "7.0",
+      "criterio": "chave",
+      "chave": [
+        "não sobrepõe a parametrização realizada manualmente"
+      ],
+      "gabarito": [
+        "7.0"
+      ],
+      "paginas_impressas": {
+        "7.0": [
+          38,
+          38
+        ]
+      },
+      "evidencia": "Importante: a parametrização feita pelo GoBR não sobrepõe a parametrização realizada manualmente pelo usuário no Govendas."
+    },
+    {
+      "id": "mteste_12",
+      "consulta": "Coloquei frequência semanal sem dizer os dias. Quais dias da semana ficam marcados como preferidos?",
+      "tipo": "sintaxe",
+      "folha_origem": "7.3.1",
+      "criterio": "chave",
+      "chave": [
+        "1 de segunda a sexta"
+      ],
+      "gabarito": [
+        "7.3.1"
+      ],
+      "paginas_impressas": {
+        "7.3.1": [
+          39,
+          39
+        ]
+      },
+      "evidencia": "Os dias da semana recebem o valor padrão: 1 de segunda a sexta, 0 no sábado e domingo."
+    },
+    {
+      "id": "mteste_13",
+      "consulta": "Dá para dar mais peso à segunda e menos ao sábado na preferência de dias? Que números isso vira?",
+      "tipo": "sintaxe",
+      "folha_origem": "7.3.3",
+      "criterio": "manual",
+      "chave": null,
+      "gabarito": [
+        "7.2",
+        "7.3.3"
+      ],
+      "paginas_impressas": {
+        "7.2": [
+          38,
+          38
+        ],
+        "7.3.3": [
+          40,
+          40
+        ]
+      },
+      "evidencia": "Resultado: segunda = 3, quinta e sexta = 2, terça e sábado = 1, quarta e domingo = 0.",
+      "justificativa": "7.3.3 mostra como escrever maior/menor na preferência; a tabela de 7.2 diz que número cada intensidade vira (3 = maior, 2 = normal, 1 = menor), que é a segunda metade da pergunta."
+    },
+    {
+      "id": "mteste_14",
+      "consulta": "Quero aproveitar a frequência que o próprio vendedor já cadastrou para cada cliente. E se ele não tiver cadastrado nada?",
+      "tipo": "opcoes",
+      "folha_origem": "7.3.5",
+      "criterio": "chave",
+      "chave": [
+        "Se o vendedor não configurou"
+      ],
+      "gabarito": [
+        "7.3.5"
+      ],
+      "paginas_impressas": {
+        "7.3.5": [
+          40,
+          41
+        ]
+      },
+      "evidencia": "Se o vendedor não configurou, usa o padrão de 7 dias."
+    },
+    {
+      "id": "mteste_15",
+      "consulta": "Quero que os dias preferidos sejam calculados pelas visitas passadas do cliente e, se não houver dados suficientes, que esse parâmetro fique sem configuração. Como escrevo?",
+      "tipo": "sintaxe",
+      "folha_origem": "7.3.6",
+      "criterio": "chave",
+      "chave": [
+        "do historico ou remover"
+      ],
+      "gabarito": [
+        "7.3.6"
+      ],
+      "paginas_impressas": {
+        "7.3.6": [
+          41,
+          41
+        ]
+      },
+      "evidencia": "Se não houver histórico suficiente, não parametriza (remove a configuração desse parâmetro)."
+    },
+    {
+      "id": "mteste_16",
+      "consulta": "Se a parametrização tem a restrição de dias úteis e a rotina roda num sábado, o que acontece?",
+      "tipo": "opcoes",
+      "folha_origem": "7.3.7",
+      "criterio": "chave",
+      "chave": [
+        "ignorada para esta passagem"
+      ],
+      "gabarito": [
+        "7.3.7"
+      ],
+      "paginas_impressas": {
+        "7.3.7": [
+          41,
+          41
+        ]
+      },
+      "evidencia": "Se executar em sábado ou domingo, a parametrização é ignorada para esta passagem."
+    },
+    {
+      "id": "mteste_17",
+      "consulta": "Quero receber o alerta consolidado por supervisor, em vez de uma linha por cliente. Qual tipo de evento escolho?",
+      "tipo": "opcoes",
+      "folha_origem": "8.3",
+      "criterio": "chave",
+      "chave": [
+        "informe resumo do supervisor"
+      ],
+      "gabarito": [
+        "8.3"
+      ],
+      "paginas_impressas": {
+        "8.3": [
+          49,
+          49
+        ]
+      },
+      "evidencia": "SUMMARIZED_SALESMAN | informe resumo do supervisor | Resumo agrupado por supervisor (atributos fixos)"
+    },
+    {
+      "id": "mteste_18",
+      "consulta": "Para disparar um aviso quando o cliente ficar um certo número de dias sem comprar, qual condição eu uso?",
+      "tipo": "opcoes",
+      "folha_origem": "8.4.1",
+      "criterio": "chave",
+      "chave": [
+        "não tem venda em"
+      ],
+      "gabarito": [
+        "8.4.1",
+        "9.1.1"
+      ],
+      "paginas_impressas": {
+        "8.4.1": [
+          49,
+          50
+        ],
+        "9.1.1": [
+          56,
+          56
+        ]
+      },
+      "evidencia": "não tem venda em <<N>> dias | O cliente não teve venda nos últimos N dias"
+    },
+    {
+      "id": "mteste_19",
+      "consulta": "Como gero um alerta para os clientes que ainda estão sem nenhuma configuração de atendimento?",
+      "tipo": "opcoes",
+      "folha_origem": "8.4.2",
+      "criterio": "chave",
+      "chave": [
+        "não tem parametro"
+      ],
+      "gabarito": [
+        "6.8",
+        "8.4.2"
+      ],
+      "paginas_impressas": {
+        "6.8": [
+          29,
+          30
+        ],
+        "8.4.2": [
+          50,
+          50
+        ]
+      },
+      "evidencia": "não tem parametro | O cliente não tem nenhum parâmetro configurado"
+    },
+    {
+      "id": "mteste_20",
+      "consulta": "Os alertas estão chegando sem o nome do supervisor e do vendedor. O que pode estar faltando?",
+      "tipo": "conceito",
+      "folha_origem": "8.7",
+      "criterio": "chave",
+      "chave": [
+        "precisam estar cadastrados no Govendas"
+      ],
+      "gabarito": [
+        "8.7"
+      ],
+      "paginas_impressas": {
+        "8.7": [
+          53,
+          54
+        ]
+      },
+      "evidencia": "Obs.: para que os nomes de supervisores e vendedores apareçam nos alertas, eles precisam estar cadastrados no Govendas."
+    }
+  ]
+}

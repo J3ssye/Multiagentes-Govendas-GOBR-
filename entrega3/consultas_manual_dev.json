@@ -1,0 +1,402 @@
+{
+  "_sobre": {
+    "papel": "DESENVOLVIMENTO: usado para decidir (estratégia de chunking e configuração de busca). Não serve para relatar desempenho final.",
+    "escrita": "15 consultas escritas em 02/11/2026 a partir do texto extraído das folhas de origem, antes de existir índice ou busca. Folhas escolhidas à mão para cobrir os capítulos 2 a 10 e os três tipos de conteúdo (texto, tabela, código), incluindo uma folha minúscula (8.5.1, 91 caracteres).",
+    "gabarito": "Lista de folhas do manual (subseção x.y.z, seção x.y ou abertura n.0 de capítulo). Critério 'chave': folhas cujo texto contém todas as construções-chave da resposta (busca exata no texto extraído). Critério 'manual': folhas decididas na leitura (1 consulta, conceito sem construção única).",
+    "acerto": "Um chunk acerta se a sua folha principal está no gabarito (estratégia C: a folha do nó; estratégia B: a folha com mais caracteres dentro do chunk).",
+    "paginas": "Páginas impressas do manual; página do PDF = impressa + 4.",
+    "limitacao": "Consultas escritas por quem montou o índice, depois de ler a folha de origem. Mesmo com paráfrase, termos do domínio (ruptura, supervisores, WhatsApp, em aberto) se repetem e favorecem a busca por palavras (BM25). Não há consultas de usuários reais."
+  },
+  "consultas": [
+    {
+      "id": "mdev_01",
+      "consulta": "Quais tipos de bloco um arquivo de regras GOBR pode ter e em que ordem eles precisam aparecer?",
+      "tipo": "conceito",
+      "folha_origem": "2.2",
+      "criterio": "manual",
+      "chave": null,
+      "gabarito": [
+        "2.2",
+        "10.0"
+      ],
+      "paginas_impressas": {
+        "2.2": [
+          3,
+          4
+        ],
+        "10.0": [
+          57,
+          58
+        ]
+      },
+      "evidencia": "Todo arquivo gorules começa com a declaração de versão e pode conter até quatro categorias de regras, usadas em sequência"
+    },
+    {
+      "id": "mdev_02",
+      "consulta": "Com que palavra eu começo a declaração de uma equipe de vendedores, e como escrevo o nome dela?",
+      "tipo": "sintaxe",
+      "folha_origem": "3.1",
+      "criterio": "chave",
+      "chave": [
+        "palavra-chave time"
+      ],
+      "gabarito": [
+        "3.1"
+      ],
+      "paginas_impressas": {
+        "3.1": [
+          5,
+          5
+        ]
+      },
+      "evidencia": "A palavra-chave time define o início de um bloco de time, seguida de um nome entre aspas duplas."
+    },
+    {
+      "id": "mdev_03",
+      "consulta": "Quero que a equipe tenha só os vendedores de dois supervisores, deixando um vendedor específico de fora. Como restrinjo isso?",
+      "tipo": "opcoes",
+      "folha_origem": "3.3.1",
+      "criterio": "chave",
+      "chave": [
+        "dos supervisores(",
+        "menos("
+      ],
+      "gabarito": [
+        "3.3.1",
+        "3.4"
+      ],
+      "paginas_impressas": {
+        "3.3.1": [
+          6,
+          7
+        ],
+        "3.4": [
+          7,
+          7
+        ]
+      },
+      "evidencia": "menos(\"id1\", \"id2\", ...) | Exclui da seleção os vendedores com os IDs especificados"
+    },
+    {
+      "id": "mdev_04",
+      "consulta": "Tem como montar uma carteira que não tire os clientes das carteiras declaradas depois dela?",
+      "tipo": "conceito",
+      "folha_origem": "4.2",
+      "criterio": "chave",
+      "chave": [
+        "livre"
+      ],
+      "gabarito": [
+        "4.2",
+        "4.4",
+        "4.5",
+        "4.7"
+      ],
+      "paginas_impressas": {
+        "4.2": [
+          8,
+          9
+        ],
+        "4.4": [
+          13,
+          13
+        ],
+        "4.5": [
+          13,
+          14
+        ],
+        "4.7": [
+          16,
+          17
+        ]
+      },
+      "evidencia": "Carteira não-exclusiva: os clientes incluídos não são removidos do pool disponível."
+    },
+    {
+      "id": "mdev_05",
+      "consulta": "Na seleção por ruptura, dá para exigir ao mesmo tempo que o cliente esteja sem comprar e sem receber visita?",
+      "tipo": "opcoes",
+      "folha_origem": "4.6.1",
+      "criterio": "chave",
+      "chave": [
+        "de positivacao(",
+        "de visita("
+      ],
+      "gabarito": [
+        "4.3.4",
+        "4.5",
+        "4.6.1"
+      ],
+      "paginas_impressas": {
+        "4.3.4": [
+          12,
+          12
+        ],
+        "4.5": [
+          13,
+          14
+        ],
+        "4.6.1": [
+          15,
+          16
+        ]
+      },
+      "evidencia": "É possível combinar mais de uma opção de ruptura:"
+    },
+    {
+      "id": "mdev_06",
+      "consulta": "Como faço a regra valer só em dia de expediente, sem contar sábado e domingo?",
+      "tipo": "opcoes",
+      "folha_origem": "5.3",
+      "criterio": "chave",
+      "chave": [
+        "nos dias uteis"
+      ],
+      "gabarito": [
+        "5.1",
+        "5.3",
+        "7.3.8",
+        "7.3.9",
+        "7.3.10",
+        "8.2"
+      ],
+      "paginas_impressas": {
+        "5.1": [
+          18,
+          18
+        ],
+        "5.3": [
+          19,
+          19
+        ],
+        "7.3.8": [
+          42,
+          42
+        ],
+        "7.3.9": [
+          42,
+          42
+        ],
+        "7.3.10": [
+          43,
+          43
+        ],
+        "8.2": [
+          48,
+          49
+        ]
+      },
+      "evidencia": "nos dias uteis | De segunda a sexta-feira"
+    },
+    {
+      "id": "mdev_07",
+      "consulta": "Quero só os clientes que ninguém da empresa visitou nos últimos dois meses. Que filtro uso?",
+      "tipo": "opcoes",
+      "folha_origem": "6.2",
+      "criterio": "chave",
+      "chave": [
+        "recencia de visita global"
+      ],
+      "gabarito": [
+        "6.2"
+      ],
+      "paginas_impressas": {
+        "6.2": [
+          23,
+          24
+        ]
+      },
+      "evidencia": "fora da recencia de visita global ... | Clientes cuja última visita ocorreu fora do intervalo especificado por qualquer vendedor da empresa"
+    },
+    {
+      "id": "mdev_08",
+      "consulta": "Como separo os clientes que estão devendo, com títulos vencidos em aberto?",
+      "tipo": "opcoes",
+      "folha_origem": "6.3",
+      "criterio": "chave",
+      "chave": [
+        "inadimplentes"
+      ],
+      "gabarito": [
+        "6.3"
+      ],
+      "paginas_impressas": {
+        "6.3": [
+          24,
+          25
+        ]
+      },
+      "evidencia": "inadimplentes | Clientes com pendências financeiras em aberto"
+    },
+    {
+      "id": "mdev_09",
+      "consulta": "No período de um filtro, posso contar em semanas ou só em dias e meses?",
+      "tipo": "opcoes",
+      "folha_origem": "6.12",
+      "criterio": "chave",
+      "chave": [
+        "<<N>> semanas"
+      ],
+      "gabarito": [
+        "6.11.1",
+        "6.12",
+        "6.13"
+      ],
+      "paginas_impressas": {
+        "6.11.1": [
+          33,
+          33
+        ],
+        "6.12": [
+          34,
+          36
+        ],
+        "6.13": [
+          36,
+          37
+        ]
+      },
+      "evidencia": "em <<N>> semanas | dentro do intervalo dos semanas especificados"
+    },
+    {
+      "id": "mdev_10",
+      "consulta": "Como tiro da agenda os clientes parados há muito tempo, sem precisar mudar a frequência deles?",
+      "tipo": "sintaxe",
+      "folha_origem": "7.3.4",
+      "criterio": "chave",
+      "chave": [
+        "nao agendar"
+      ],
+      "gabarito": [
+        "7.3.4"
+      ],
+      "paginas_impressas": {
+        "7.3.4": [
+          40,
+          40
+        ]
+      },
+      "evidencia": "Os clientes inativos há 90+ dias são marcados para não aparecerem na agenda."
+    },
+    {
+      "id": "mdev_11",
+      "consulta": "Dá para usar a frequência que o vendedor já tinha configurado para o cliente, só que encurtando alguns dias?",
+      "tipo": "opcoes",
+      "folha_origem": "7.4.3",
+      "criterio": "chave",
+      "chave": [
+        "do vendedor menos"
+      ],
+      "gabarito": [
+        "7.4.3"
+      ],
+      "paginas_impressas": {
+        "7.4.3": [
+          44,
+          45
+        ]
+      },
+      "evidencia": "do vendedor menos <<N>> dias | Frequência do vendedor decrementada de N dias"
+    },
+    {
+      "id": "mdev_12",
+      "consulta": "Que marcadores coloco na mensagem do alerta para aparecer o dia e o horário do envio?",
+      "tipo": "opcoes",
+      "folha_origem": "8.5.1",
+      "criterio": "chave",
+      "chave": [
+        "$datahora$"
+      ],
+      "gabarito": [
+        "8.2",
+        "8.5.1"
+      ],
+      "paginas_impressas": {
+        "8.2": [
+          48,
+          49
+        ],
+        "8.5.1": [
+          51,
+          52
+        ]
+      },
+      "evidencia": "$datahora$ | Data e hora atual"
+    },
+    {
+      "id": "mdev_13",
+      "consulta": "Como faço o aviso chegar por WhatsApp em vez de notificação no aplicativo?",
+      "tipo": "sintaxe",
+      "folha_origem": "8.6",
+      "criterio": "chave",
+      "chave": [
+        "whatsapp("
+      ],
+      "gabarito": [
+        "8.2",
+        "8.6"
+      ],
+      "paginas_impressas": {
+        "8.2": [
+          48,
+          49
+        ],
+        "8.6": [
+          53,
+          53
+        ]
+      },
+      "evidencia": "WhatsApp | whatsapp(\"nome_do_template\") | Mensagem via WhatsApp usando um template pré-aprovado"
+    },
+    {
+      "id": "mdev_14",
+      "consulta": "Qual a diferença entre os dois jeitos de marcar clientes que a linguagem oferece?",
+      "tipo": "conceito",
+      "folha_origem": "9.0",
+      "criterio": "chave",
+      "chave": [
+        "tag nomeada"
+      ],
+      "gabarito": [
+        "9.0"
+      ],
+      "paginas_impressas": {
+        "9.0": [
+          55,
+          55
+        ]
+      },
+      "evidencia": "Tag nomeada: define uma marcação baseada em uma tag de contexto já criada"
+    },
+    {
+      "id": "mdev_15",
+      "consulta": "Como escrevo uma data nas regras: dia, mês e ano, ou ano primeiro?",
+      "tipo": "sintaxe",
+      "folha_origem": "10.0",
+      "criterio": "chave",
+      "chave": [
+        "dd-mm-yyyy"
+      ],
+      "gabarito": [
+        "6.13",
+        "7.4.1",
+        "10.0"
+      ],
+      "paginas_impressas": {
+        "6.13": [
+          36,
+          37
+        ],
+        "7.4.1": [
+          43,
+          44
+        ],
+        "10.0": [
+          57,
+          58
+        ]
+      },
+      "evidencia": "Data DMY | 'dd-mm-yyyy' | '01-01-2025'"
+    }
+  ]
+}
