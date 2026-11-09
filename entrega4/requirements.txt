@@ -1,0 +1,4 @@
+# Entrega 4: as dependências da Entrega 3 (que já incluem as da Entrega 2) mais o SDK do Gemini,
+# que só o --responder usa; o fluxo padrão e a avaliação não chamam nenhum LLM.
+-r ../entrega3/requirements.txt
+google-genai>=1.0
