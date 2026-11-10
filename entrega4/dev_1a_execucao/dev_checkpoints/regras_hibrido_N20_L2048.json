@@ -1,0 +1,23 @@
+{
+ "config": {
+  "indice": "regras",
+  "fase1": "hibrido",
+  "n": 20,
+  "max_length": 2048,
+  "nome": "regras_hibrido_N20_L2048"
+ },
+ "excluida": true,
+ "excluida_por": {
+  "consulta": "img_infinitto",
+  "tempo_s": 83.823,
+  "teto_s": 20.0
+ },
+ "n_consultas": 14,
+ "consultas_medidas": 0,
+ "inicio": "2026-11-09T18:45:28-03:00",
+ "fim": "2026-11-09T18:46:51-03:00",
+ "dispositivo": {
+  "embedding": "cpu",
+  "reranker_2048": "cpu"
+ }
+}

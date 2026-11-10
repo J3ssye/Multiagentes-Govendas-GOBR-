@@ -1,0 +1,23 @@
+{
+ "config": {
+  "indice": "regras",
+  "fase1": "vetor",
+  "n": 10,
+  "max_length": 2048,
+  "nome": "regras_vetor_N10_L2048"
+ },
+ "excluida": true,
+ "excluida_por": {
+  "consulta": "img_maxlub",
+  "tempo_s": 26.971,
+  "teto_s": 20.0
+ },
+ "n_consultas": 14,
+ "consultas_medidas": 1,
+ "inicio": "2026-11-09T07:01:55-03:00",
+ "fim": "2026-11-09T18:44:33-03:00",
+ "dispositivo": {
+  "embedding": "cpu",
+  "reranker_2048": "cpu"
+ }
+}

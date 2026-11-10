@@ -1,0 +1,157 @@
+{
+ "config": {
+  "indice": "regras",
+  "fase1": "vetor",
+  "n": 5,
+  "max_length": 2048,
+  "nome": "regras_vetor_N5_L2048"
+ },
+ "excluida": false,
+ "excluida_por": null,
+ "n_consultas": 14,
+ "metricas": {
+  "n": 14,
+  "hit@1": 0.5,
+  "hit@3": 0.5,
+  "hit@5": 0.5,
+  "hit@10": 0.5,
+  "MRR": 0.5210627366717407
+ },
+ "hit3_frac": "1/2",
+ "mrr_frac": "15968671/30646350",
+ "latencia_s": 17.636,
+ "por_consulta": [
+  {
+   "id": "img_infinitto",
+   "posicao": 47,
+   "tempos_s": [
+    11.917,
+    11.161
+   ],
+   "min_s": 11.161
+  },
+  {
+   "id": "img_maxlub",
+   "posicao": 18,
+   "tempos_s": [
+    13.602,
+    13.419
+   ],
+   "min_s": 13.419
+  },
+  {
+   "id": "img_v1vidros",
+   "posicao": 15,
+   "tempos_s": [
+    11.777,
+    11.767
+   ],
+   "min_s": 11.767
+  },
+  {
+   "id": "sint_ramos_12_19",
+   "posicao": 1,
+   "tempos_s": [
+    17.502,
+    17.699
+   ],
+   "min_s": 17.502
+  },
+  {
+   "id": "sint_vendedora_sandra",
+   "posicao": 1,
+   "tempos_s": [
+    11.945,
+    11.877
+   ],
+   "min_s": 11.877
+  },
+  {
+   "id": "sint_prospeccao_50_53",
+   "posicao": 1,
+   "tempos_s": [
+    14.309,
+    12.194
+   ],
+   "min_s": 12.194
+  },
+  {
+   "id": "sint_quinzenal_mensal",
+   "posicao": 81,
+   "tempos_s": [
+    8.711,
+    9.004
+   ],
+   "min_s": 8.711
+  },
+  {
+   "id": "sint_bloqueios_rota_hoje",
+   "posicao": 18,
+   "tempos_s": [
+    9.115,
+    8.326
+   ],
+   "min_s": 8.326
+  },
+  {
+   "id": "sint_bloqueio_30d_prospect_14_ativo_7",
+   "posicao": 1,
+   "tempos_s": [
+    7.978,
+    8.331
+   ],
+   "min_s": 7.978
+  },
+  {
+   "id": "sint_televendas_x_campo",
+   "posicao": 1,
+   "tempos_s": [
+    17.636,
+    19.596
+   ],
+   "min_s": 17.636
+  },
+  {
+   "id": "sint_ramo_e_ciclo_de_vida",
+   "posicao": 1,
+   "tempos_s": [
+    16.169,
+    16.446
+   ],
+   "min_s": 16.169
+  },
+  {
+   "id": "sint_campo_pf_ramo17",
+   "posicao": 23,
+   "tempos_s": [
+    12.913,
+    12.411
+   ],
+   "min_s": 12.411
+  },
+  {
+   "id": "sint_30_dias_sem_choque",
+   "posicao": 1,
+   "tempos_s": [
+    11.988,
+    11.073
+   ],
+   "min_s": 11.073
+  },
+  {
+   "id": "sint_regra_grande_regioes",
+   "posicao": 25,
+   "tempos_s": [
+    11.738,
+    11.839
+   ],
+   "min_s": 11.738
+  }
+ ],
+ "inicio": "2026-11-09T20:38:10-03:00",
+ "fim": "2026-11-09T20:44:03-03:00",
+ "dispositivo": {
+  "embedding": "cpu",
+  "reranker_2048": "cpu"
+ }
+}

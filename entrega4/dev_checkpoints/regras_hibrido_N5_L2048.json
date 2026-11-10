@@ -1,0 +1,23 @@
+{
+ "config": {
+  "indice": "regras",
+  "fase1": "hibrido",
+  "n": 5,
+  "max_length": 2048,
+  "nome": "regras_hibrido_N5_L2048"
+ },
+ "excluida": true,
+ "excluida_por": {
+  "consulta": "sint_televendas_x_campo",
+  "tempo_s": 22.236,
+  "teto_s": 20.0
+ },
+ "n_consultas": 14,
+ "consultas_medidas": 9,
+ "inicio": "2026-11-09T20:44:03-03:00",
+ "fim": "2026-11-09T20:48:47-03:00",
+ "dispositivo": {
+  "embedding": "cpu",
+  "reranker_2048": "cpu"
+ }
+}

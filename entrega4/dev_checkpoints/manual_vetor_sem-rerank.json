@@ -1,0 +1,165 @@
+{
+ "config": {
+  "indice": "manual",
+  "fase1": "vetor",
+  "n": 0,
+  "max_length": 0,
+  "nome": "manual_vetor_sem-rerank"
+ },
+ "excluida": false,
+ "excluida_por": null,
+ "n_consultas": 15,
+ "metricas": {
+  "n": 15,
+  "hit@1": 0.5333333333333333,
+  "hit@3": 0.8,
+  "hit@5": 0.9333333333333333,
+  "hit@10": 1.0,
+  "MRR": 0.6933333333333334
+ },
+ "hit3_frac": "4/5",
+ "mrr_frac": "52/75",
+ "latencia_s": 0.319,
+ "por_consulta": [
+  {
+   "id": "mdev_01",
+   "posicao": 3,
+   "tempos_s": [
+    0.356,
+    0.286
+   ],
+   "min_s": 0.286
+  },
+  {
+   "id": "mdev_02",
+   "posicao": 1,
+   "tempos_s": [
+    0.295,
+    0.333
+   ],
+   "min_s": 0.295
+  },
+  {
+   "id": "mdev_03",
+   "posicao": 1,
+   "tempos_s": [
+    0.312,
+    0.286
+   ],
+   "min_s": 0.286
+  },
+  {
+   "id": "mdev_04",
+   "posicao": 1,
+   "tempos_s": [
+    0.259,
+    0.258
+   ],
+   "min_s": 0.258
+  },
+  {
+   "id": "mdev_05",
+   "posicao": 1,
+   "tempos_s": [
+    0.302,
+    0.303
+   ],
+   "min_s": 0.302
+  },
+  {
+   "id": "mdev_06",
+   "posicao": 2,
+   "tempos_s": [
+    0.331,
+    0.314
+   ],
+   "min_s": 0.314
+  },
+  {
+   "id": "mdev_07",
+   "posicao": 5,
+   "tempos_s": [
+    0.319,
+    0.324
+   ],
+   "min_s": 0.319
+  },
+  {
+   "id": "mdev_08",
+   "posicao": 6,
+   "tempos_s": [
+    0.263,
+    0.299
+   ],
+   "min_s": 0.263
+  },
+  {
+   "id": "mdev_09",
+   "posicao": 5,
+   "tempos_s": [
+    0.267,
+    0.322
+   ],
+   "min_s": 0.267
+  },
+  {
+   "id": "mdev_10",
+   "posicao": 1,
+   "tempos_s": [
+    0.299,
+    0.267
+   ],
+   "min_s": 0.267
+  },
+  {
+   "id": "mdev_11",
+   "posicao": 2,
+   "tempos_s": [
+    0.31,
+    0.294
+   ],
+   "min_s": 0.294
+  },
+  {
+   "id": "mdev_12",
+   "posicao": 2,
+   "tempos_s": [
+    0.29,
+    0.295
+   ],
+   "min_s": 0.29
+  },
+  {
+   "id": "mdev_13",
+   "posicao": 1,
+   "tempos_s": [
+    0.262,
+    0.261
+   ],
+   "min_s": 0.261
+  },
+  {
+   "id": "mdev_14",
+   "posicao": 1,
+   "tempos_s": [
+    0.264,
+    0.28
+   ],
+   "min_s": 0.264
+  },
+  {
+   "id": "mdev_15",
+   "posicao": 1,
+   "tempos_s": [
+    0.284,
+    0.257
+   ],
+   "min_s": 0.257
+  }
+ ],
+ "inicio": "2026-11-09T20:19:34-03:00",
+ "fim": "2026-11-09T20:19:43-03:00",
+ "dispositivo": {
+  "embedding": "cpu"
+ }
+}

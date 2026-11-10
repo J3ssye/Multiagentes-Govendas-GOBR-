@@ -1,0 +1,23 @@
+{
+ "config": {
+  "indice": "regras",
+  "fase1": "hibrido",
+  "n": 50,
+  "max_length": 512,
+  "nome": "regras_hibrido_N50_L512"
+ },
+ "excluida": true,
+ "excluida_por": {
+  "consulta": "img_infinitto",
+  "tempo_s": 115.34,
+  "teto_s": 20.0
+ },
+ "n_consultas": 14,
+ "consultas_medidas": 0,
+ "inicio": "2026-11-09T20:35:53-03:00",
+ "fim": "2026-11-09T20:37:49-03:00",
+ "dispositivo": {
+  "embedding": "cpu",
+  "reranker_512": "cpu"
+ }
+}

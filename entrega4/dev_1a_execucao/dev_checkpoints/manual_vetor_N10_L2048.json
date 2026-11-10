@@ -1,0 +1,23 @@
+{
+ "config": {
+  "indice": "manual",
+  "fase1": "vetor",
+  "n": 10,
+  "max_length": 2048,
+  "nome": "manual_vetor_N10_L2048"
+ },
+ "excluida": true,
+ "excluida_por": {
+  "consulta": "mdev_01",
+  "tempo_s": 27.957,
+  "teto_s": 20.0
+ },
+ "n_consultas": 15,
+ "consultas_medidas": 0,
+ "inicio": "2026-11-09T18:53:58-03:00",
+ "fim": "2026-11-09T18:54:26-03:00",
+ "dispositivo": {
+  "embedding": "cpu",
+  "reranker_2048": "cpu"
+ }
+}

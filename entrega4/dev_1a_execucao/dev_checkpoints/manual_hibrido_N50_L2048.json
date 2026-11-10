@@ -1,0 +1,23 @@
+{
+ "config": {
+  "indice": "manual",
+  "fase1": "hibrido",
+  "n": 50,
+  "max_length": 2048,
+  "nome": "manual_hibrido_N50_L2048"
+ },
+ "excluida": true,
+ "excluida_por": {
+  "consulta": "mdev_01",
+  "tempo_s": 131.153,
+  "teto_s": 20.0
+ },
+ "n_consultas": 15,
+ "consultas_medidas": 0,
+ "inicio": "2026-11-09T18:58:42-03:00",
+ "fim": "2026-11-09T19:00:53-03:00",
+ "dispositivo": {
+  "embedding": "cpu",
+  "reranker_2048": "cpu"
+ }
+}
