@@ -1,0 +1,20 @@
+{
+ "_sobre": "Mensagens de roteamento do teste da Entrega 5, escritas em 10/11/2026 antes do desenvolvimento e sem rodar o roteador sobre elas. Não devem ser abertas para ajustar o roteador, o validador nem os prompts. Rota esperada = o que a mensagem pede, não o que o roteador faz. Inclui negativos difíceis (quase_dominio) e positivos difíceis (descricao_e_pergunta sem os marcadores do léxico). rtest_11 a rtest_15 foram acrescentadas em 14/11/2026, depois da revisão da regra e antes de reescrever o roteador, também sem rodar o roteador sobre elas: pedidos de regra em forma de pergunta e uma pergunta de linguagem com número.",
+ "consultas": [
+  {"id": "rtest_01", "consulta": "Qual é a capital da Austrália?", "rota_esperada": "nenhum", "tipo": "fora_do_dominio"},
+  {"id": "rtest_02", "consulta": "Me ajuda a montar um treino de peito e tríceps para a semana.", "rota_esperada": "nenhum", "tipo": "fora_do_dominio"},
+  {"id": "rtest_03", "consulta": "Como instalo o Python no Windows?", "rota_esperada": "nenhum", "tipo": "fora_do_dominio"},
+  {"id": "rtest_04", "consulta": "Traduza para o inglês: bom dia, como vai você?", "rota_esperada": "nenhum", "tipo": "fora_do_dominio"},
+  {"id": "rtest_05", "consulta": "Como cadastro um novo cliente na minha loja virtual de camisetas?", "rota_esperada": "nenhum", "tipo": "quase_dominio"},
+  {"id": "rtest_06", "consulta": "Quero uma regra de ortografia para usar crase corretamente.", "rota_esperada": "nenhum", "tipo": "quase_dominio"},
+  {"id": "rtest_07", "consulta": "Para o televendas, clientes inativos devem ser ligados a cada 30 dias e quem nunca comprou a cada 14. Como declaro o time do televendas?", "rota_esperada": "ambos", "tipo": "descricao_e_pergunta"},
+  {"id": "rtest_08", "consulta": "Preciso que vendedores novos só atendam prospects, uma vez por semana. Dá para limitar a carteira deles assim e qual a sintaxe?", "rota_esperada": "ambos", "tipo": "descricao_e_pergunta"},
+  {"id": "rtest_09", "consulta": "Clientes baixados na Receita não devem ser agendados e os inadimplentes só a cada 21 dias. Existe filtro para situação cadastral? Como escrevo?", "rota_esperada": "ambos", "tipo": "descricao_e_pergunta"},
+  {"id": "rtest_10", "consulta": "Quero organizar a agenda de visitas dos meus vendedores.", "rota_esperada": "regras", "tipo": "descricao_vaga"},
+  {"id": "rtest_11", "consulta": "Dá para montar uma regra em que o vendedor visita os clientes do ramo 12 a cada 21 dias?", "rota_esperada": "regras", "tipo": "pedido_em_pergunta"},
+  {"id": "rtest_12", "consulta": "Consegue escrever uma regra que bloqueie o agendamento dos clientes inadimplentes?", "rota_esperada": "regras", "tipo": "pedido_em_pergunta"},
+  {"id": "rtest_13", "consulta": "Clientes sem compra há 90 dias devem ser visitados toda semana, você faz isso pra mim?", "rota_esperada": "regras", "tipo": "pedido_em_pergunta"},
+  {"id": "rtest_14", "consulta": "Como eu escrevo uma regra para ligar para os prospects a cada 10 dias?", "rota_esperada": "ambos", "tipo": "descricao_e_pergunta"},
+  {"id": "rtest_15", "consulta": "Dá para usar um período de 45 dias no filtro de última compra?", "rota_esperada": "manual", "tipo": "pergunta_com_numero"}
+ ]
+}

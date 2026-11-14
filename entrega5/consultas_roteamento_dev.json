@@ -1,0 +1,20 @@
+{
+ "_sobre": "Mensagens de roteamento do desenvolvimento da Entrega 5, escritas em 10/11/2026 antes de qualquer execução. Complementam as consultas de desenvolvimento da Entrega 2 (rota esperada: regras) e da Entrega 3 (rota esperada: manual). Rota esperada = o que a mensagem pede, não o que o roteador faz. O roteador foi calibrado olhando estas e aquelas (regra_agente.md, seção 5). rdev_10 a rdev_15 foram acrescentadas em 14/11/2026, na revisão da regra: pedidos de regra em forma de pergunta, que a 1ª versão do roteador mandava ao manual, e uma pergunta de linguagem com número.",
+ "consultas": [
+  {"id": "rdev_01", "consulta": "Qual a previsão do tempo para amanhã em Goiânia?", "rota_esperada": "nenhum", "tipo": "fora_do_dominio"},
+  {"id": "rdev_02", "consulta": "Como faço um bolo de cenoura com cobertura de chocolate?", "rota_esperada": "nenhum", "tipo": "fora_do_dominio"},
+  {"id": "rdev_03", "consulta": "Me explica a diferença entre banco de dados relacional e não relacional.", "rota_esperada": "nenhum", "tipo": "fora_do_dominio"},
+  {"id": "rdev_04", "consulta": "Escreva um e-mail para o meu gerente pedindo férias em dezembro.", "rota_esperada": "nenhum", "tipo": "fora_do_dominio"},
+  {"id": "rdev_05", "consulta": "Oi, tudo bem?", "rota_esperada": "nenhum", "tipo": "fora_do_dominio"},
+  {"id": "rdev_06", "consulta": "Qual a melhor forma de marcar uma reunião com um cliente no Google Agenda?", "rota_esperada": "nenhum", "tipo": "quase_dominio"},
+  {"id": "rdev_07", "consulta": "Quero ligar para os clientes ativos a cada 14 dias e não agendar os inadimplentes. Como escrevo isso em GOBR?", "rota_esperada": "ambos", "tipo": "descricao_e_pergunta"},
+  {"id": "rdev_08", "consulta": "Os clientes do ramo 12 devem ser visitados a cada 7 dias e os demais a cada 14. Qual a sintaxe para separar por ramo de atividade?", "rota_esperada": "ambos", "tipo": "descricao_e_pergunta"},
+  {"id": "rdev_09", "consulta": "Preciso de uma regra para agendar meus clientes.", "rota_esperada": "regras", "tipo": "descricao_vaga"},
+  {"id": "rdev_10", "consulta": "Como faço uma regra para agendar clientes inativos a cada 30 dias?", "rota_esperada": "ambos", "tipo": "descricao_e_pergunta"},
+  {"id": "rdev_11", "consulta": "Pode criar uma regra para visitar clientes novos toda segunda?", "rota_esperada": "regras", "tipo": "pedido_em_pergunta"},
+  {"id": "rdev_12", "consulta": "Preciso de uma regra para agendar clientes inativos a cada 30 dias. Consegue me ajudar?", "rota_esperada": "regras", "tipo": "pedido_em_pergunta"},
+  {"id": "rdev_13", "consulta": "Quero que o televendas ligue a cada 15 dias para ativos, pode ser?", "rota_esperada": "regras", "tipo": "pedido_em_pergunta"},
+  {"id": "rdev_14", "consulta": "Você consegue gerar uma regra de televendas para clientes inativos?", "rota_esperada": "regras", "tipo": "pedido_em_pergunta"},
+  {"id": "rdev_15", "consulta": "Posso usar um período de 60 dias no filtro de pedidos?", "rota_esperada": "manual", "tipo": "pergunta_com_numero"}
+ ]
+}
