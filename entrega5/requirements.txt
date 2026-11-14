@@ -1,0 +1,4 @@
+# Entrega 5: as dependências da Entrega 4 (que já incluem as das Entregas 2 e 3 e o SDK do Gemini)
+# mais o LangGraph, que monta o grafo do agente (agente.py).
+-r ../entrega4/requirements.txt
+langgraph>=1.0
